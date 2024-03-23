@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node ./dist/server.js",
-    "build": "tsc"
+    "build": "tsc",
+    "watch": "tsc --watch"
   },
   "author": "kurodoke",
   "license": "ISC",
@@ -15,5 +16,9 @@
     "@types/node": "^20.11.29",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "windows-1251": "^3.0.4",
+    "windows-1252": "^3.0.4"
   }
 }

@@ -1,6 +1,6 @@
 import { SendPacket } from "../core-network/sendPacket";
 import { Convert } from "../core-util/convert";
-import { BASE_SERVER_LIST_PAK } from "./auth-network-auth-ACK/BASE_SERVER_LIST_PAK";
+import { BASE_SERVER_LIST_PAK } from "./auth-network_auth_SERVER/BASE_SERVER_LIST_PAK";
 
 
 class LoginClient {
@@ -62,6 +62,8 @@ class LoginClient {
             console.log("error data: ", data);
         }
     }
+
+    readP
 }
 
 
