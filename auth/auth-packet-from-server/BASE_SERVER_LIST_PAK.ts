@@ -1,10 +1,11 @@
-import { SendPacket } from "../../core-network/sendPacket";
+import { Connection } from "../../core-network/connection";
+import { Packet } from "../../core-network/packet";
 import { AuthOpcodeACK } from "../auth-protocol/auth-opcode-ACK";
 
-class BASE_SERVER_LIST_PAK extends SendPacket {
-    _sessionId;
+class BASE_SERVER_LIST_PAK extends Packet {
+    _sessionId: number;
     _sessionSeed;
-    _ip;
+    _ip : string;
 
     testServer = [
         {
@@ -25,20 +26,20 @@ class BASE_SERVER_LIST_PAK extends SendPacket {
         },
     ];
 
-    constructor(LoginClient) {
-        super();
-        this._sessionId = LoginClient.sessionId;
-        this._sessionSeed = LoginClient.sessionSeed;
-        this._ip = LoginClient.socket.remoteAddress;
+    constructor(opcode:number, connection: Connection) {
+        super("write", opcode);
+        this._sessionId = connection.sessionId;
+        // this._sessionSeed = LoginClient.sessionSeed;
+        this._ip = connection.socket.remoteAddress;
     }
 
     write() {
-        this.writeH(AuthOpcodeACK.BASE_GET_SCHANNEL_LIST_ACK);
+        // this.writeH(AuthOpcodeACK.BASE_GET_SCHANNEL_LIST_ACK);
         this.writeD(this._sessionId);
         this.writeIP(this._ip);
         this.writeH(29890); //udp port
         this.writeH(32759); //hash
-        // this.writeH_u(this._sessionSeed);
+        // this.writeH(this._sessionSeed);
 
         for (let index = 0; index < 10; index++) {
             this.writeC(1);
@@ -49,9 +50,9 @@ class BASE_SERVER_LIST_PAK extends SendPacket {
             let server = this.testServer[index];
             this.writeD(server.state);
             this.writeIP(server.ip);
-            this.writeH_u(server.port);
+            this.writeH(server.port);
             this.writeC(server.type);
-            this.writeH_u(server.max_players);
+            this.writeH(server.max_players);
             this.writeD(0);//D ?10 ?0
         }
         //network util
@@ -65,15 +66,15 @@ class BASE_SERVER_LIST_PAK extends SendPacket {
         // this.writeD(100);
         // this.writeD(150);
 
-        // this.writeH_u(0)
-        this.writeH_u(0)
-        this.writeH_u(1)
-        this.writeH_u(0)
-        this.writeH_u(0)
-        this.writeH_u(0)
-        this.writeH_u(0)
-        this.writeH_u(0)
-        this.writeH_u(0)
+        // this.writeH(0)
+        this.writeH(0)
+        this.writeH(1)
+        this.writeH(0)
+        this.writeH(0)
+        this.writeH(0)
+        this.writeH(0)
+        this.writeH(0)
+        this.writeH(0)
 
         // separate the packet
         // this.writeEN()

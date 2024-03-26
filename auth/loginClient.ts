@@ -1,6 +1,6 @@
 import { SendPacket } from "../core-network/sendPacket";
-import { Convert } from "../core-util/convert";
-import { BASE_SERVER_LIST_PAK } from "./auth-network_auth_SERVER/BASE_SERVER_LIST_PAK";
+import { Convert } from "../util/convert";
+import { BASE_SERVER_LIST_PAK } from "./auth-packet-from-server/BASE_SERVER_LIST_PAK";
 
 
 class LoginClient {
@@ -40,7 +40,7 @@ class LoginClient {
     }
 
     init() {
-        this.sendPacket(new BASE_SERVER_LIST_PAK(this));
+        // this.sendPacket(new BASE_SERVER_LIST_PAK(this));
     }
 
     sendPacket(SendPacket: SendPacket) {

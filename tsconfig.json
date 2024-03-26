@@ -2,7 +2,7 @@
     "compilerOptions": {
         "moduleResolution": "node",
         "outDir": "dist",
-        "module": "CommonJS",
+        "module": "ESNext",
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
     }

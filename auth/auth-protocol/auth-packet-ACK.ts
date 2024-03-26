@@ -1,3 +1,7 @@
 class AuthPacketACK{
+    constructor(){
+
+    }
+
     
 }

@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "pointblank server based on node.js",
   "main": "server.js",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node ./dist/server.js",
-    "build": "tsc",
-    "watch": "tsc --watch"
+    "build": "tsc-esm",
+    "watch": "tsc-esm --watch",
+    "dev": "tsc-esm && ts-node ./dist/server.js"
   },
   "author": "kurodoke",
   "license": "ISC",
@@ -18,6 +19,7 @@
     "typescript": "^5.4.2"
   },
   "dependencies": {
+    "@digitak/tsc-esm": "^3.1.4",
     "windows-1251": "^3.0.4",
     "windows-1252": "^3.0.4"
   }

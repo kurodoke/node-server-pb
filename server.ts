@@ -1,13 +1,14 @@
 import net from "net";
-import { LoginClient } from "./auth/loginClient";
-import { decrypt } from "./core-util/decrypt";
+import { decrypt } from "./util/decrypt";
+import { AuthClient } from "./auth/authClient";
+import { BASE_LOGIN_PAK } from "./auth/auth-packet-from-client/BASE_LOGIN_PAK";
 
 class Server {
     private PORT: number = 39190;
     private _server: net.Server;
     private buf: Buffer;
     public _listClient: Map<number, net.Socket> = new Map();
-    public listClient: Map<string, LoginClient> = new Map();
+    public listClient: Map<string, AuthClient> = new Map();
 
     constructor(){
         this._server = net.createServer((socket) => {
@@ -17,12 +18,15 @@ class Server {
                 if (len > 8908){
 				    len &= 32767;
                 }
-                //decrypt
-                let lc = this.listClient.get(socket.remoteAddress);
 
-                let decryptedData = decrypt(data, lc.CRYPT_KEY);
+                //decrypt
+                let client = this.listClient.get(socket.remoteAddress);
+
+                let decryptedData = decrypt(data, client.CRYPT_KEY);
 
                 console.log(decryptedData);
+
+                client.receivePacket(decryptedData);
                 
             });
         
@@ -47,6 +51,10 @@ class Server {
         });
     }
     
+    decryptRawData(){
+        
+    }
+
     addSocket(socket: net.Socket){
         let sessionId = 1;
         while (true) {
@@ -57,9 +65,9 @@ class Server {
             sessionId = sessionId + 1;
             if (!this._listClient.has(sessionId)) {
                 console.log("someone connected! session Id: " + sessionId);
-                this._listClient.set(sessionId, socket);
-                let lc = new LoginClient(socket, sessionId).start();
-                this.listClient.set(socket.remoteAddress, lc);
+                // this._listClient.set(sessionId, socket);
+                const client = new AuthClient(socket, sessionId);
+                this.listClient.set(socket.remoteAddress, client);
                 return;
             }
         }
