@@ -115,7 +115,8 @@ class BASE_LOGIN_REQ_PAK extends Packet{
             mac = '${Convert.macToString(this.mac)}',
             client_version = '${this.client_version}',
             port = ${this.socket.remotePort},
-            active = true`);
+            active = true
+            WHERE username = '${this.user.slice(0, this.user.length - 1)}'`);
 
             this.login = 1;
         }
