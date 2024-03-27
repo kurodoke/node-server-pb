@@ -29,8 +29,10 @@ class AuthClient {
 
     init() {
         const opcode = 2049;// BASE_SERVER_LIST
-        const AP = AuthPacket.getInstance("server", this.connection);
-        const packet = AP.getPACKET(opcode); //add connection as for initialization on instance
+        const packet = AuthPacket.getInstance("server", this.connection).getPACKET(opcode); //add connection as for initialization on instance
+        if (!packet){
+            return;
+        }
         this.sendPacket(packet);
     }
 
@@ -41,7 +43,10 @@ class AuthClient {
     receivePacket(data: Buffer){
 
         const opcode = data.readInt16LE(2); //2 byte to skip the length byte
-        const packet = AuthPacket.getInstance("client").getPACKET(opcode, data); //get process packet by opcode
+        const packet = AuthPacket.getInstance("client", this.connection).getPACKET(opcode, data); //get process packet by opcode
+        if (!packet){
+            return;
+        }
         packet.offset = packet.offset + 4;
         this.readPacket(packet);
     }
@@ -65,15 +70,15 @@ class AuthClient {
         
     }
 
-    readPacket(packetToRead: Packet){
-        packetToRead.offset = packetToRead.offset + 2; //skip 2 byte;
+    async readPacket(packetToRead: Packet){
+        // packetToRead.offset = packetToRead.offset + 2; //skip 2 byte;
 
         packetToRead.read();
 
-        let login_opcode = 2564;
-        packetToRead.opcode = login_opcode;
-        
-        this.sendPacket(packetToRead);
+        let packetToRespond = await packetToRead.proc(); // return new packet to send after been read
+        // let login_opcode = 2564;
+        // packetToRead.opcode = login_opcode;
+        this.sendPacket(packetToRespond);
 
     }
 }

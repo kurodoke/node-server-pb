@@ -1,6 +1,6 @@
 import { Connection } from "../../core-network/connection";
 import { Packet } from "../../core-network/packet";
-import { AuthOpcodeACK } from "../auth-protocol/auth-opcode-ACK";
+import { AuthOpcodeACK } from "../auth-protocol/authOpcodeServer";
 
 class BASE_SERVER_LIST_PAK extends Packet {
     _sessionId: number;
@@ -26,7 +26,7 @@ class BASE_SERVER_LIST_PAK extends Packet {
         },
     ];
 
-    constructor(opcode:number, connection: Connection) {
+    constructor(opcode: number, connection: Connection) {
         super("write", opcode);
         this._sessionId = connection.sessionId;
         // this._sessionSeed = LoginClient.sessionSeed;

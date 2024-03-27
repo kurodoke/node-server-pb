@@ -1,7 +1,9 @@
 import net from "net";
 import { decrypt } from "./util/decrypt";
 import { AuthClient } from "./auth/authClient";
-import { BASE_LOGIN_PAK } from "./auth/auth-packet-from-client/BASE_LOGIN_PAK";
+import { Database } from "./util/database";
+
+
 
 class Server {
     private PORT: number = 39190;
@@ -9,6 +11,7 @@ class Server {
     private buf: Buffer;
     public _listClient: Map<number, net.Socket> = new Map();
     public listClient: Map<string, AuthClient> = new Map();
+    private DB = Database.getInstance();
 
     constructor(){
         this._server = net.createServer((socket) => {

@@ -1,7 +1,8 @@
 import { Connection } from "../../core-network/connection";
 import { Packet } from "../../core-network/packet";
 import { BASE_SERVER_LIST_PAK } from "../auth-packet-from-server/BASE_SERVER_LIST_PAK";
-import { BASE_LOGIN_PAK } from "../auth-packet-from-client/BASE_LOGIN_PAK";
+import { BASE_LOGIN_REQ_PAK } from "../auth-packet-from-client/BASE_LOGIN_REQ_PAK";
+import { BASE_XINGCODE_REQ_PAK } from "../auth-packet-from-client/BASE_XINGCODE_REQ_PAK";
 
 type TpacketFrom = "client" | "server";
 
@@ -32,7 +33,7 @@ class AuthPacket{
             return AuthPacket._ServerInstance;
         } else {
             if (!AuthPacket._ClientInstance){
-                AuthPacket._ClientInstance = new AuthPacket(packetFrom);
+                AuthPacket._ClientInstance = new AuthPacket(packetFrom, connection);
             }
             return AuthPacket._ClientInstance;
         }
@@ -54,19 +55,27 @@ class AuthPacket{
         if (this.packetFrom == "client" && data){
             switch(opcode){
                 case 2561:
-                    packet = new BASE_LOGIN_PAK(opcode, data);
+                    packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
                     this.listPacket.set(this.counter + 1, packet);
                     break;
                 case 2563:
-                    packet = new BASE_LOGIN_PAK(opcode, data);
+                    packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
                     this.listPacket.set(this.counter + 1, packet);
                     break;
                 case 2572:
-                    packet = new BASE_LOGIN_PAK(opcode, data);
+                    packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
                     this.listPacket.set(this.counter + 1, packet);
                     break;
                 case 2573:
-                    packet = new BASE_LOGIN_PAK(opcode, data);
+                    packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
+                    this.listPacket.set(this.counter + 1, packet);
+                    break;
+                case 2582:
+                    packet = new BASE_XINGCODE_REQ_PAK(opcode, data);
+                    this.listPacket.set(this.counter + 1, packet);
+                    break;
+                case 2584:
+                    packet = new BASE_XINGCODE_REQ_PAK(opcode, data);
                     this.listPacket.set(this.counter + 1, packet);
                     break;
                 default:
@@ -75,8 +84,9 @@ class AuthPacket{
         }
         if(packet == null){
             this.connection.socket.end(()=>{
-                console.error("packet not found");
+                console.log("packet not found, packet:" + opcode);
             })
+
         }
         return packet;
     }

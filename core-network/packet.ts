@@ -1,7 +1,7 @@
 import * as windows1251 from 'windows-1251';
 import * as windows1252 from 'windows-1252';
 
-interface IPacket{
+interface IPacket {
     opcode: number;
     buf: Buffer;
     offset: number;
@@ -10,6 +10,7 @@ interface IPacket{
 
     read();
     write();
+    proc(): Promise<Packet>;
 }
 
 type TPacket = "read" | "write";
@@ -239,6 +240,7 @@ class Packet implements IPacket{
 
     write(){}
     read(){}
+    async proc(): Promise<Packet>{return this;}
 }
 
-export { Packet }
+export { Packet, IPacket }
