@@ -66,7 +66,7 @@ class AuthClient {
         const data = Buffer.concat([buf_packetSize, packetToSend.buf]); //combine the packet before with the payload
         
         this.connection.socket.write(data);
-        console.log("DATA sent");
+        console.log("DATA sent, opcode : " + packetToSend.opcode);
         
     }
 
@@ -78,8 +78,10 @@ class AuthClient {
         let packetToRespond = await packetToRead.proc(); // return new packet to send after been read
         // let login_opcode = 2564;
         // packetToRead.opcode = login_opcode;
-        this.sendPacket(packetToRespond);
 
+        packetToRespond.map(packet => {
+            this.sendPacket(packet);
+        })
     }
 }
 

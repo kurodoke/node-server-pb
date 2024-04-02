@@ -13,7 +13,7 @@ class BASE_XINGCODE_REQ_PAK extends Packet{
     }
 
     async proc() {
-        return new BASE_XINGCODE(2583);
+        return [new BASE_XINGCODE(2583)];
     }
 }
 

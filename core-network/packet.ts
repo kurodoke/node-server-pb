@@ -10,7 +10,7 @@ interface IPacket {
 
     read();
     write();
-    proc(): Promise<Packet>;
+    proc(): Promise<Packet[]>;
 }
 
 type TPacket = "read" | "write";
@@ -240,7 +240,7 @@ class Packet implements IPacket{
 
     write(){}
     read(){}
-    async proc(): Promise<Packet>{return this;}
+    async proc(): Promise<Packet[]>{return [this];}
 }
 
 export { Packet, IPacket }

@@ -5,6 +5,7 @@ import { BASE_LOGIN_PAK, IBASE_LOGIN_PAK } from "../auth-packet-from-server/BASE
 import { Convert } from "../../util/convert";
 import { Connection } from "../../core-network/connection";
 import { Socket } from "net";
+import { BASE_MYCASH_PAK } from "../auth-packet-from-server/BASE_MYCASH_PAK";
 
 class BASE_LOGIN_REQ_PAK extends Packet{
     public client_version: string;
@@ -51,8 +52,16 @@ class BASE_LOGIN_REQ_PAK extends Packet{
     }
 
     async proc(){
+        const packetArray = new Array();
+
         await this.checkLogin();
-        return new BASE_LOGIN_PAK(2564, this.login, this.zero, this.user);
+
+        packetArray.push(new BASE_LOGIN_PAK(2564, this.login, this.zero, this.user))
+        
+        if(this.login == 1){
+            // packetArray.push(new BASE_MYCASH_PAK(545, 50000, 100000));
+        } 
+        return packetArray;
     }
 
     // write(){
@@ -68,36 +77,43 @@ class BASE_LOGIN_REQ_PAK extends Packet{
 
     async checkLogin(){
         const DB = Database.getInstance();
-        const data = await DB.getData(`SELECT * FROM account WHERE username = '${this.user.slice(0, this.user.length - 1)}'`);
+        const data = await DB.model.account.findOne({
+            where:{
+                username: `${this.user.slice(0, this.user.length - 1)}`
+            }
+        });
+
+
+        // const data = await DB.getData(`SELECT * FROM account WHERE username = '${this.user.slice(0, this.user.length - 1)}'`);
 
         const password = sha256(this.password.slice(0, this.password.length - 1));
 
-        console.log(data);
+        // console.log(data);
         
         /**
          * if the account is not found, then is make a new one
          */
 
-        if(data.length == 0){
+        if(data == null){
             console.log("data not yet");
             
-            await DB.setData(`INSERT INTO account (username, password, userfilelist, ip, mac, client_version, port, active) 
-            VALUES 
-            ('${this.user.slice(0, this.user.length - 1)}',
-            '${password}',
-            '${this.userfilelist}',
-            '${Convert.ipToString(this.ip)}',
-            '${Convert.macToString(this.mac)}',
-            '${this.client_version}',
-            ${this.socket.remotePort}, 
-            true)`);
+            await DB.model.account.create({
+                username: `${this.user.slice(0, this.user.length - 1)}`,
+                password: password,
+                userfilelist: this.userfilelist,
+                ip: Convert.ipToString(this.ip),
+                mac: Convert.macToString(this.mac),
+                client_version: this.client_version,
+                port: this.socket.remotePort,
+                active: true
+            })
 
             this.login = 1; // success login | true identity
         } 
         /**
          * if the account is found but the password is wrong
          */
-        else if (password != data[0]["password"]){
+        else if (password != data.password){
             console.log("data not correct");
             
             this.login = 0x80000102;
@@ -108,17 +124,20 @@ class BASE_LOGIN_REQ_PAK extends Packet{
         else {
             console.log("data correct");
             
-
-            await DB.updateData(`UPDATE account SET 
-            userfilelist = '${this.userfilelist}',
-            ip = '${Convert.ipToString(this.ip)}',
-            mac = '${Convert.macToString(this.mac)}',
-            client_version = '${this.client_version}',
-            port = ${this.socket.remotePort},
-            active = true
-            WHERE username = '${this.user.slice(0, this.user.length - 1)}'`);
+            await DB.model.account.update({
+                userfilelist: this.userfilelist,
+                ip: Convert.ipToString(this.ip),
+                mac: Convert.macToString(this.mac),
+                client_version: this.client_version,
+                port: this.socket.remotePort,
+                active: true
+            },{
+                where: {username: `${this.user.slice(0, this.user.length - 1)}`}
+            })
 
             this.login = 1;
+
+
         }
 
         // let success_opcode = 1;

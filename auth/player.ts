@@ -1,5 +1,77 @@
 class Player{
-
+    id: number;
+    delay: number;
+    delayTitle: number;
+    name: string = "";
+    login: string;
+    clan_name: string;
+    new_name: string;
+    addrEndPoint: string;
+    rank: number;
+    point: number;
+    cash: number;
+    exp: number;
+    color: number;
+    brooch: number;
+    insignia: number;
+    medal: number;
+    blue_order: number;
+    tourney_level: number;
+    clan_id: number;
+    online: number;
+    clanDate: number;
+    last_up: number;
+    clan_invited: number;
+    channelIdx: number;
+    spectactor: number;
+    channel_id: number = -1;
+    server_id: number = -1;
+    slot: number = -1;
+    cf_slot: number = -1;
+    cf_id: number = -1;
+    last_fstate: number = -1;
+    last_cstate: number = -1;
+    room_id: number = -1;
+    client_version: number;
+    clan_logo: number;
+    error_test: number;
+    template: number;
+    mission1: number;
+    mission2: number;
+    mission3: number;
+    mission4: number;
+    localhost: Uint8Array;
+    changeSlot: boolean = false;
+    sql: boolean = false;
+    changeServer: boolean = false;
+    shopList: boolean = false;
+    firstEnter: boolean = false;
+    checkou: boolean = false;
+    reward_c: boolean = false;
+    // country: CountryEnum;
+    // role: ClanRole;
+    // access_level: AccessLevel;
+    // address: InetAddress; // Anda perlu menentukan kelas InetAddress sendiri
+    // minutePlayed: Date;
+    // equipment: PlayerEquipment;
+    // config: PlayerConfig;
+    // title: PlayerTitles;
+    // stats: PlayerStats;
+    // missions: PlayerMission;
+    // keyboard: PlayerKeyboard;
+    // mouse: PlayerKeyboard2;
+    // event: PlayerEvent;
+    // coupon: PlayerCoupon;
+    // vip: PlayerVip;
+    // connection: Connection;
+    // inventario: Map<number, PlayerInventory>; // Anda dapat mengganti ke Map<number, PlayerInventory> jika diinginkan
+    // listClans: Map<number, Clan[]>;
+    // listClanFront: Map<number, Clan[]>;
+    // quarent: Map<number, number>;
+    // friend: PlayerFriend[];
+    // messages: PlayerMessage[];
+    // db: PlayerSQL;
+    // date: DateTimeUtil;
 }
 
 export {Player}
