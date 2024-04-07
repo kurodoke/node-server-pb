@@ -1,9 +1,11 @@
 import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
+import { PlayerInstance } from "./player";
 
 /**
  * base attribute of the model
  */
 interface TitleAttributes {
+    playerId: number;
     title_1: number;
     title_2: number;
     title_3: number;
@@ -58,7 +60,9 @@ interface TitleAttributes {
  * this combine the attribute interface with model,
  * so we can use this interface as referencee for the model
  */
-interface TitleInstance extends Model<TitleAttributes>, TitleAttributes {}
+interface TitleInstance extends Model<TitleAttributes>, TitleAttributes {
+    getPlayer(): Promise<PlayerInstance>;
+}
 
 /**
  * the model static of the model,
@@ -75,6 +79,10 @@ export type TitleModelStatic = typeof Model
  */
 export function TitleModel(sequelize: Sequelize): TitleModelStatic {
     return <TitleModelStatic>sequelize.define<TitleInstance>("title", {
+        playerId:{
+            type:DataTypes.INTEGER,
+            allowNull: false,
+        },
         title_1: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -322,6 +330,7 @@ export function TitleModel(sequelize: Sequelize): TitleModelStatic {
  * this is clan object from each instance of player title in database
  */
 export class Title implements TitleAttributes {
+    declare playerId: number;
     declare title_1: number;
     declare title_2: number;
     declare title_3: number;
@@ -372,6 +381,7 @@ export class Title implements TitleAttributes {
     declare equip_title_3: number;
 
     constructor(title: TitleAttributes) {
+        this.playerId = title.playerId;
         this.title_1 = title.title_1;
         this.title_2 = title.title_2;
         this.title_3 = title.title_3;

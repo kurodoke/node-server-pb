@@ -1,5 +1,11 @@
-import { Association, BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
-import { PlayerInstance, PlayerModelStatic } from "./player";
+import {
+    BuildOptions,
+    DataTypes,
+    Model,
+    Sequelize,
+} from "sequelize";
+import { PlayerInstance } from "./player";
+import { Database } from "../util/database";
 
 /**
  * base attribute of the model
@@ -37,7 +43,7 @@ export type AccountModelStatic = typeof Model & {
 };
 
 /**
- * 
+ *
  * @param sequelize database connection
  * @returns ModelStatic
  */
@@ -80,7 +86,7 @@ export function AccountModel(sequelize: Sequelize): AccountModelStatic {
 /**
  * this is clan object from each instance of account in database
  */
-export class Account implements AccountAttributes{
+export class Account implements AccountAttributes {
     declare id: number;
     declare username: string;
     declare password: string;
@@ -91,7 +97,7 @@ export class Account implements AccountAttributes{
     declare port: number;
     declare active: boolean;
 
-    constructor(account: AccountAttributes){
+    constructor(account: AccountAttributes) {
         this.id = account.id;
         this.username = account.username;
         this.password = account.password;
@@ -101,5 +107,20 @@ export class Account implements AccountAttributes{
         this.client_version = account.client_version;
         this.port = account.port;
         this.active = account.active;
+    }
+
+    async offline() {
+        this.active = false;
+
+        await Database.getInstance().model.account.update(
+            {
+                active: false,
+            },
+            {
+                where: {
+                    id: this.id,
+                },
+            }
+        );
     }
 }

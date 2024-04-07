@@ -1,9 +1,17 @@
 import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
+import { CountryEnum } from "../enum/CountryEnum";
+import { ClanRoleEnum } from "../enum/ClanRoleEnum";
+import { AccessLevelEnum } from "../enum/AccessLevelEnum";
+import { Equipment } from "./equipment";
+import { PlayerStat } from "./playerStat";
+import { Mission } from "./mission";
+import { Title } from "./title";
+import { Inventory } from "./inventory";
 
 /**
  * base attribute of the model
  */
-interface PlayerAttributes{
+export interface PlayerAttributes{
     id: number;
     name: string | null;
     rank: number;
@@ -201,13 +209,25 @@ export class Player implements PlayerAttributes {
     declare mission_4: number;
     declare tourney_level: number;
     declare clan_date: number;
-    declare access_level: number;
-    declare role: number;
+    declare access_level: AccessLevelEnum;
+    declare role: ClanRoleEnum;
     declare online: number;
     declare last_up: number;
-    declare country: number | null;
+    declare country: CountryEnum | null;
     declare clan_invited: number | null;
     declare time_get_cash: string | null;
+
+    public IPAddress: string; //inet
+    public minutePlayed: Date;
+
+    public playerTitle: Title;
+    public playerMission: Mission;
+    public playerStat: PlayerStat;
+    public playerEquipment: Equipment;
+    
+    public playerInventory: Array<Inventory> = new Array();
+
+
 
     constructor(player: PlayerAttributes) {
         this.id = player.id;
@@ -235,6 +255,22 @@ export class Player implements PlayerAttributes {
         this.country = player.country;
         this.clan_invited = player.clan_invited;
         this.time_get_cash = player.time_get_cash;
+    }
+
+    clan(): number{
+        return this.clan_id > 0 ? this.clan_id : this.clan_invited;  
+    }
+
+    clanRole(): number{
+        return this.clan_id > 0 ? this.role : ClanRoleEnum.MEMBER_UNKNOWN;
+    }
+    
+    status(): number{
+        return this.name != null ? 1 : 0;
+    }
+
+    unknown(): number{
+        return 0;
     }
 }
 

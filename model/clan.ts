@@ -1,6 +1,7 @@
 import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
 import { ClanLevelEnum } from "../enum/ClanLevelEnum";
-import { Player } from "./player";
+import { Player, PlayerInstance } from "./player";
+import { Database } from "../util/database";
 
 /**
  * base attribute of the model
@@ -37,7 +38,9 @@ interface ClanAttributes {
  * this combine the attribute interface with model,
  * so we can use this interface as referencee for the model
  */
-interface ClanInstance extends Model<ClanAttributes>, ClanAttributes {}
+interface ClanInstance extends Model<ClanAttributes>, ClanAttributes {
+    getPlayer(): Promise<PlayerInstance>;
+}
 
 /**
  * the model static of the model,
@@ -170,36 +173,38 @@ export function ClanModel(sequelize: Sequelize): ClanModelStatic {
  * this is clan object from each instance of clan in database
  */
 export class Clan implements ClanAttributes {
-    declare id: number;
-    declare owner: number;
-    declare clan_name: string;
-    declare clan_notice: string;
-    declare clan_info: string;
-    declare clan_rank: number;
-    declare logo: number;
-    declare color: number;
-    declare clan_match: number;
-    declare clan_won: number;
-    declare clan_lost: number;
-    declare authority: number;
-    declare limit_rank: number;
-    declare limit_age: number;
-    declare limit_age_2: number;
-    declare point: number;
-    declare vacancies: number;
-    declare exp: number;
-    declare data: number;
-    declare player_best_won: number;
-    declare player_best_kills: number;
-    declare player_best_headshots: number;
-    declare player_best_exp: number;
-    declare player_best_participation: number;
-    declare url: string;
+    public id: number = 0;
+    public owner: number = null;
+    public clan_name: string = "";
+    public clan_notice: string = "";
+    public clan_info: string = "";
+    public clan_rank: number = 0;
+    public logo: number = 0;
+    public color: number = 0;
+    public clan_match: number = 0;
+    public clan_won: number = 0;
+    public clan_lost: number = 0;
+    public authority: number = 0;
+    public limit_rank: number = 0;
+    public limit_age: number = 0;
+    public limit_age_2: number = 0;
+    public point: number = 1000;
+    public vacancies: number = 50;
+    public exp: number = 0;
+    public data: number = 0;
+    public player_best_won: number = 0;
+    public player_best_kills: number = 0;
+    public player_best_headshots: number = 0;
+    public player_best_exp: number = 0;
+    public player_best_participation: number = 0;
+    public url: string = "";
+
+    private static _instanceList: Map<number, Clan> = new Map();
 
     member: Array<Player> = new Array();
     countPlayer = -1;
 
-    constructor(clan: ClanAttributes) {
+    constructor(clan?: ClanAttributes) {
         this.id = clan.id;
         this.owner = clan.owner;
         this.clan_name = clan.clan_name;
@@ -225,24 +230,5 @@ export class Clan implements ClanAttributes {
         this.player_best_exp = clan.player_best_exp;
         this.player_best_participation = clan.player_best_participation;
         this.url = clan.url;
-    }
-
-    clanLevel() {
-        let count = 0;
-
-        if (this.countPlayer == -1) {
-            count = this.countPlayer;
-        } else {
-            count = this.member.length;
-        }
-
-        if (count >= 250) return ClanLevelEnum.CLAN_LEVEL_CORPS;
-        else if (count >= 200) return ClanLevelEnum.CLAN_LEVEL_DIVISION;
-        else if (count >= 150) return ClanLevelEnum.CLAN_LEVEL_BRIGADE;
-        else if (count >= 100) return ClanLevelEnum.CLAN_LEVEL_REGIMENT;
-        else if (count >= 50) return ClanLevelEnum.CLAN_LEVEL_BATTALION;
-        else if (count >= 30) return ClanLevelEnum.CLAN_LEVEL_COMPANY;
-        else if (count >= 10) return ClanLevelEnum.CLAN_LEVEL_PLATOON;
-        else return ClanLevelEnum.CLAN_LEVEL_SQUARD;
     }
 }

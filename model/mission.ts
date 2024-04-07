@@ -1,9 +1,11 @@
 import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
+import { PlayerInstance } from "./player";
 
 /**
  * base attribute of the model
  */
 interface MissionAttributes{
+    playerId: number;
     mission_1: Buffer;
     mission_2: Buffer;
     mission_3: Buffer;
@@ -19,7 +21,9 @@ interface MissionAttributes{
  * this combine the attribute interface with model,
  * so we can use this interface as referencee for the model
  */
-interface MissionInstance extends Model<MissionAttributes>, MissionAttributes {}
+interface MissionInstance extends Model<MissionAttributes>, MissionAttributes {
+    getPlayer(): Promise<PlayerInstance>;
+}
 
 /**
  * the model static of the model,
@@ -36,6 +40,10 @@ export type MissionModelStatic = typeof Model
  */
 export function MissionModel(sequelize: Sequelize) : MissionModelStatic{
     return <MissionModelStatic>sequelize.define<MissionInstance>("mission", {
+        playerId:{
+            type:DataTypes.INTEGER,
+            allowNull: false,
+        },
         mission_1: {
             type: DataTypes.BLOB("medium"),
             allowNull: false,
@@ -88,6 +96,7 @@ export function MissionModel(sequelize: Sequelize) : MissionModelStatic{
  * this is clan object from each instance of (player)mission in database
  */
 export class Mission implements MissionAttributes {
+    declare playerId: number;
     declare mission_1: Buffer;
     declare mission_2: Buffer;
     declare mission_3: Buffer;
@@ -99,6 +108,7 @@ export class Mission implements MissionAttributes {
     declare active_mission: number;
 
     constructor(mission: MissionAttributes) {
+        this.playerId = mission.playerId;
         this.mission_1 = mission.mission_1;
         this.mission_2 = mission.mission_2;
         this.mission_3 = mission.mission_3;

@@ -1,9 +1,11 @@
 import { BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
+import { PlayerInstance } from './player';
 
 /**
  * base attribute of the model
  */
 interface EquipmentAttributes{
+    playerId: number;
     primary: number;
     secondary: number;
     melee: number;
@@ -20,7 +22,9 @@ interface EquipmentAttributes{
  * this combine the attribute interface with model,
  * so we can use this interface as referencee for the model
  */
-interface EquipmentInstance extends Model<EquipmentAttributes>, EquipmentAttributes {}
+interface EquipmentInstance extends Model<EquipmentAttributes>, EquipmentAttributes {
+    getPlayer(): Promise<PlayerInstance>;
+}
 
 /**
  * the model static of the model,
@@ -37,6 +41,10 @@ export type EquipmentModelStatic = typeof Model
  */
 export function EquipmentModel(sequelize: Sequelize): EquipmentModelStatic{
     return <EquipmentModelStatic>sequelize.define<EquipmentInstance>("equipment",{
+        playerId:{
+            type:DataTypes.INTEGER,
+            allowNull: false,
+        },
         primary:{
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -94,6 +102,7 @@ export function EquipmentModel(sequelize: Sequelize): EquipmentModelStatic{
  * this is clan object from each instance of (player used)equipment in database
  */
 export class Equipment implements EquipmentAttributes {
+    declare playerId: number;
     declare primary: number;
     declare secondary: number;
     declare melee: number;
@@ -106,6 +115,7 @@ export class Equipment implements EquipmentAttributes {
     declare dino: number;
 
     constructor(equipment: EquipmentAttributes) {
+        this.playerId = equipment.playerId;
         this.primary = equipment.primary;
         this.secondary = equipment.secondary;
         this.melee = equipment.melee;
