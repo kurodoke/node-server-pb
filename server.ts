@@ -2,20 +2,22 @@ import net from "net";
 import { decrypt } from "./util/decrypt";
 import { AuthClient } from "./auth/authClient";
 import { Database } from "./util/database";
-import { ClientManager } from "./auth/clientManager";
+import { ClientManager } from "./manager/clientManager";
+import { AuthSettingServer } from "./config/authSettingServer";
+import { MapsXML } from "./data/loader/mapsXML";
 
 
 
 class Server {
-    private PORT: number = 39190;
+    private _PORT: number = 39190;
     private _server: net.Server;
-    private buf: Buffer;
-    // public _listClient: Map<number, net.Socket> = new Map();
-    // public listClient: Map<string, AuthClient> = new Map();
-    private DB = Database.getInstance();
+    private DB: Database;
 
-    constructor(){
-        const client_manager = ClientManager.getInstance(); 
+    constructor(){ 
+        /**
+         * load everything the server need before to create one
+         */
+        this.load();
 
         this._server = net.createServer((socket) => {
             socket.on("data", (data) => {
@@ -26,27 +28,32 @@ class Server {
                 }
 
                 //decrypt
-                let client = client_manager.client_ByIP.get(socket.remoteAddress);
+                let client = ClientManager.getClient("client_ip", socket.remoteAddress);
 
                 let decryptedData = decrypt(data, client.CRYPT_KEY);
 
                 console.log(decryptedData);
 
                 client.receivePacket(decryptedData);
-                
             });
         
             socket.on("connect", (connect) => {
                 console.log("connect");
             });
             socket.on("close", (close) => {
-                const id = client_manager.client_ByIP.get(socket.remoteAddress).connection.sessionId;
+                const connection = ClientManager.getClient("client_ip", socket.remoteAddress).connection;
+                const id = connection.sessionId;
 
-                if (!client_manager.client_ByIP.delete(socket.remoteAddress) && !client_manager.queue.delete(id)){
+                if (!ClientManager.deleteClient("client_ip", socket.remoteAddress) || !ClientManager.deleteClient("queue", id)){
                     console.log("closed but not deleted");
                 }
-                console.log("close");
 
+                connection.account.offline().then((success) => {
+                    console.log("close");
+                }, (err) => {
+                    console.log("closed but db not updated");
+                })
+                
             });
         
             socket.on("connectionAttempt", (stream) => {
@@ -62,28 +69,36 @@ class Server {
             this.addSocket(socket);
         });
     }
-    
-    decryptRawData(){
+
+    load(){
+        /**
+         * config the server
+         */
+        AuthSettingServer.load()
+
+
+        /**
+         * load maps
+         */
+        MapsXML.load();
         
+
+        this.DB = Database.getInstance();
     }
 
-    addSocket(socket: net.Socket){
+    addSocket(socket: net.Socket): void{
         let sessionId = 0;
-        const client_manager = ClientManager.getInstance(); 
         while (true) {
             if (sessionId >= 100000) {
                 break;
-            }
-            
+            }            
             sessionId = sessionId + 1;
-
-
-            if (!client_manager.queue.has(sessionId)) {
+            if (!ClientManager.getClient("queue", sessionId)) {
                 console.log("someone connected! session Id: " + sessionId);
-                // this._listClient.set(sessionId, socket);
-                const client = new AuthClient(socket, sessionId);
-                client_manager.queue.set(sessionId, client);
-                client_manager.client_ByIP.set(socket.remoteAddress, client);
+                let client = new AuthClient(socket, sessionId);
+                if(!ClientManager.setClient("queue", client) || !ClientManager.setClient("client_ip", client)) {
+                    console.log("error on set client on client manager");
+                }
                 return;
             }
         }
@@ -91,9 +106,8 @@ class Server {
 
     start() {
         try {
-            // await this.DB.syncAllModel();
-            this._server.listen(this.PORT, "127.0.0.1", 5, () => {
-                console.log(`Server started on port ${this.PORT}`);
+            this._server.listen(this._PORT, "127.0.0.1", 5, () => {
+                console.log(`Server started on port ${this._PORT}`);
             });
         } catch (err) {
             console.log(err);
