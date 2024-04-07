@@ -3,29 +3,27 @@ import { Packet } from "../../core-network/packet";
 import { BASE_SERVER_LIST_PAK } from "../auth-packet-from-server/BASE_SERVER_LIST_PAK";
 import { BASE_LOGIN_REQ_PAK } from "../auth-packet-from-client/BASE_LOGIN_REQ_PAK";
 import { BASE_XINGCODE_REQ_PAK } from "../auth-packet-from-client/BASE_XINGCODE_REQ_PAK";
+import { PacketOpcodeServer } from "../../enum/PacketOpcodeServer";
+import { Player } from '../../model/player';
 
-type TpacketFrom = "client" | "server";
+type TypePacketFrom = "client" | "server";
 
 class AuthPacket{
-    public packetFrom: TpacketFrom;
-    public connection: Connection;
+    declare public packetFrom: TypePacketFrom;
+    declare public connection: Connection;
     public listPacket: Map<number, Packet> = new Map();
-    private counter: number = 0;
+    private _counter: number = 0;
     private static _ServerInstance: AuthPacket;
     private static _ClientInstance: AuthPacket;
 
-    constructor(packetFrom: TpacketFrom, connection: Connection = null){
-        if(packetFrom == "client"){
-            
-        } else{
-        }
+    private constructor(packetFrom: TypePacketFrom, connection: Connection = null){
         this.packetFrom = packetFrom;
         if(connection) {
             this.connection = connection;
         }
     }
 
-    static getInstance(packetFrom: TpacketFrom, connection: Connection = null): AuthPacket{
+    static getInstance(packetFrom: TypePacketFrom, connection: Connection = null): AuthPacket{
         if(packetFrom == "server"){
             if (!AuthPacket._ServerInstance){
                 AuthPacket._ServerInstance = new AuthPacket(packetFrom, connection);
@@ -43,9 +41,9 @@ class AuthPacket{
         let packet = null;
         if (this.packetFrom == "server"){
             switch (opcode) {
-                case 2049:
+                case PacketOpcodeServer.BASE_SERVER_LIST_PAK:
                     packet = new BASE_SERVER_LIST_PAK(opcode, this.connection);
-                    this.listPacket.set(this.counter + 1, packet);
+                    this.setPacket(packet);
                     break;
             
                 default:
@@ -56,27 +54,27 @@ class AuthPacket{
             switch(opcode){
                 case 2561:
                     packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
-                    this.listPacket.set(this.counter + 1, packet);
+                    this.setPacket(packet);
                     break;
                 case 2563:
                     packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
-                    this.listPacket.set(this.counter + 1, packet);
+                    this.setPacket(packet);
                     break;
                 case 2572:
                     packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
-                    this.listPacket.set(this.counter + 1, packet);
+                    this.setPacket(packet);
                     break;
                 case 2573:
                     packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
-                    this.listPacket.set(this.counter + 1, packet);
+                    this.setPacket(packet);
                     break;
                 case 2582:
                     packet = new BASE_XINGCODE_REQ_PAK(opcode, data);
-                    this.listPacket.set(this.counter + 1, packet);
+                    this.setPacket(packet);
                     break;
                 case 2584:
                     packet = new BASE_XINGCODE_REQ_PAK(opcode, data);
-                    this.listPacket.set(this.counter + 1, packet);
+                    this.setPacket(packet);
                     break;
                 default:
                     break;
@@ -91,6 +89,9 @@ class AuthPacket{
         return packet;
     }
 
+    setPacket(packet: Packet){
+        this.listPacket.set(this._counter + 1, packet);
+    }
 
 }
 

@@ -1,13 +1,14 @@
 import net from 'net';
 import { Convert } from "../util/convert";
-import { Player } from "./player";
+import { Player } from '../model/player';
 import { Connection } from '../core-network/connection';
 import randomInt from '../util/random';
 import { Packet } from '../core-network/packet';
 import { AuthPacket } from './auth-protocol/authPacket';
+import { Account } from '../model/account';
+import { PacketOpcodeServer } from '../enum/PacketOpcodeServer';
 
 class AuthClient {
-    player: Player;
     SECURITY_KEY = 29890;
     CRYPT_KEY: number;
     sessionSeed: number;
@@ -28,7 +29,7 @@ class AuthClient {
     }
 
     init() {
-        const opcode = 2049;// BASE_SERVER_LIST
+        const opcode = PacketOpcodeServer.BASE_SERVER_LIST_PAK;
         const packet = AuthPacket.getInstance("server", this.connection).getPACKET(opcode); //add connection as for initialization on instance
         if (!packet){
             return;
@@ -42,7 +43,7 @@ class AuthClient {
      */
     receivePacket(data: Buffer){
 
-        const opcode = data.readInt16LE(2); //2 byte to skip the length byte
+        const opcode = data.readInt16LE(2); //2 first byte is opcode
         const packet = AuthPacket.getInstance("client", this.connection).getPACKET(opcode, data); //get process packet by opcode
         if (!packet){
             return;
@@ -81,6 +82,7 @@ class AuthClient {
 
         packetToRespond.map(packet => {
             this.sendPacket(packet);
+            AuthPacket.getInstance("server").setPacket(packet);
         })
     }
 }
