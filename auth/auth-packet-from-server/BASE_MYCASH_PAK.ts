@@ -5,7 +5,9 @@ class BASE_MYCASH_PAK extends Packet{
     point: number;
 
     constructor(opcode: number, cash: number, point: number ){
-        super("write", opcode)
+        super("write", opcode);
+        this.cash = cash;
+        this.point = point;
     }
 
     write() {

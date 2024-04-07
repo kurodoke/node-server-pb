@@ -1,11 +1,8 @@
 import { Connection } from "../../core-network/connection";
 import { Packet } from "../../core-network/packet";
-import { AuthOpcodeACK } from "../auth-protocol/authOpcodeServer";
 
 class BASE_SERVER_LIST_PAK extends Packet {
-    _sessionId: number;
-    _sessionSeed;
-    _ip : string;
+    private _connection: Connection;
 
     testServer = [
         {
@@ -28,15 +25,13 @@ class BASE_SERVER_LIST_PAK extends Packet {
 
     constructor(opcode: number, connection: Connection) {
         super("write", opcode);
-        this._sessionId = connection.sessionId;
-        // this._sessionSeed = LoginClient.sessionSeed;
-        this._ip = connection.socket.remoteAddress;
+        this._connection = connection;
     }
 
     write() {
         // this.writeH(AuthOpcodeACK.BASE_GET_SCHANNEL_LIST_ACK);
-        this.writeD(this._sessionId);
-        this.writeIP(this._ip);
+        this.writeD(this._connection.sessionId);
+        this.writeIP(this._connection.socket.remoteAddress);
         this.writeH(29890); //udp port
         this.writeH(32759); //hash
         // this.writeH(this._sessionSeed);

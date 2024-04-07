@@ -1,10 +1,5 @@
-import { IPacket, Packet } from "../../core-network/packet";
+import { Packet } from "../../core-network/packet";
 
-interface IBASE_LOGIN_PAK extends IPacket{
-    login: number;
-    zero: number;
-    user: string;
-}
 
 class BASE_LOGIN_PAK extends Packet{
     login: number;
@@ -29,4 +24,4 @@ class BASE_LOGIN_PAK extends Packet{
 
 }
 
-export {BASE_LOGIN_PAK, IBASE_LOGIN_PAK};
+export {BASE_LOGIN_PAK};
