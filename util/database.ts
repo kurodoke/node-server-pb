@@ -14,6 +14,7 @@ import { ItemModel, ItemModelStatic } from "../model/item";
 import { StoreModel, StoreModelStatic } from "../model/store";
 import { CouponModel, CouponModelStatic } from "../model/coupon";
 import { AuthSettingDatabase } from "../config/authSettingDatabase";
+import { AuthSettingServer } from "../config/authSettingServer";
 
 
 interface IModel{
@@ -45,6 +46,7 @@ class Database{
             port: AuthSettingDatabase.dbPort ? AuthSettingDatabase.dbPort : 5432,
             database: AuthSettingDatabase.dbName ? AuthSettingDatabase.dbName : 'postgres',
             username: AuthSettingDatabase.dbUser ? AuthSettingDatabase.dbUser : "postgres",
+            logging: AuthSettingServer.debugMode ? true : false,
         })
         // this._connection = new Sequelize('postgres://postgres:123456@localhost:5432/nodepb');
         
