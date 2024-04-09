@@ -21,7 +21,7 @@ class Server {
 
         this._server = net.createServer((socket) => {
             socket.on("data", (data) => {
-                if (data.length < 4 ) return console.error('error: on not enough data (4)');
+                if (data.length < 4 ) return console.log('[Error] Data received was under 4 byte length');
                 let len = data.readUInt16LE();
                 if (len > 8908){
 				    len &= 32767;
@@ -45,13 +45,13 @@ class Server {
                 const id = connection.sessionId;
 
                 if (!ClientManager.deleteClient("client_ip", socket.remoteAddress) || !ClientManager.deleteClient("queue", id)){
-                    console.log("closed but not deleted");
+                    console.log("[Error] The Connection closed but the instance can't be deleted or not exist (session Id: " + id + ")");
                 }
 
                 connection.account.offline().then((success) => {
-                    console.log("close");
+                    console.log("[Info] The Connection sucessfuly closed");
                 }, (err) => {
-                    console.log("closed but db not updated");
+                    console.log("[Error] The Connection closed but the Database can't be updated");
                 })
                 
             });
@@ -94,10 +94,13 @@ class Server {
             }            
             sessionId = sessionId + 1;
             if (!ClientManager.getClient("queue", sessionId)) {
-                console.log("someone connected! session Id: " + sessionId);
+                console.log("[Info] The Connection is succesfully established! (session Id: " + sessionId + ")");
                 let client = new AuthClient(socket, sessionId);
                 if(!ClientManager.setClient("queue", client) || !ClientManager.setClient("client_ip", client)) {
-                    console.log("error on set client on client manager");
+                    console.log("[Error] Error occurred to set the client on client manager");
+                    socket.end(() => {
+                        console.log("[Warn] Trying to close (session Id: " + sessionId + ")");
+                    })
                 }
                 return;
             }
@@ -107,7 +110,7 @@ class Server {
     start() {
         try {
             this._server.listen(this._PORT, "127.0.0.1", 5, () => {
-                console.log(`Server started on port ${this._PORT}`);
+                console.log(`[Info] Server started on port ${this._PORT}`);
             });
         } catch (err) {
             console.log(err);

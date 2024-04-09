@@ -1,5 +1,5 @@
-import { Connection } from "../../core-network/connection";
-import { Packet } from "../../core-network/packet";
+import { Connection } from "../../network/connection";
+import { Packet } from "../../network/packet";
 import { BASE_SERVER_LIST_PAK } from "../auth-packet-from-server/BASE_SERVER_LIST_PAK";
 import { BASE_LOGIN_REQ_PAK } from "../auth-packet-from-client/BASE_LOGIN_REQ_PAK";
 import { BASE_XINGCODE_REQ_PAK } from "../auth-packet-from-client/BASE_XINGCODE_REQ_PAK";
@@ -82,7 +82,7 @@ class AuthPacket{
         }
         if(packet == null){
             this.connection.socket.end(()=>{
-                console.log("packet not found, packet:" + opcode);
+                console.log("[Error] Packet not found with opcode:" + opcode);
             })
 
         }

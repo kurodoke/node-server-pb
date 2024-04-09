@@ -115,9 +115,8 @@ class Database{
         try {
             await this._connection.authenticate();
             await this._connection.sync();
-            console.log('_Connection has been established successfully.');
         } catch (error) {
-            console.error('Unable to connect to the database:', error);
+            console.log('[Error] Unable to connect to the database:', error);
         }
     }
 

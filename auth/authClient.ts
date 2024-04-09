@@ -1,9 +1,9 @@
 import net from 'net';
 import { Convert } from "../util/convert";
 import { Player } from '../model/player';
-import { Connection } from '../core-network/connection';
+import { Connection } from '../network/connection';
 import randomInt from '../util/random';
-import { Packet } from '../core-network/packet';
+import { Packet } from '../network/packet';
 import { AuthPacket } from './auth-protocol/authPacket';
 import { Account } from '../model/account';
 import { PacketOpcodeServer } from '../enum/PacketOpcodeServer';
@@ -67,7 +67,7 @@ class AuthClient {
         const data = Buffer.concat([buf_packetSize, packetToSend.buf]); //combine the packet before with the payload
         
         this.connection.socket.write(data);
-        console.log("DATA sent, opcode : " + packetToSend.opcode);
+        console.log("[Info] Packet sent with opcode : " + packetToSend.opcode);
         
     }
 

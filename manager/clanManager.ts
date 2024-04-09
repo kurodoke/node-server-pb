@@ -76,7 +76,7 @@ export class ClanManager{
             // if member exist then return player[] if not then return array with nothing inside
             return ClanManager._listClan.get(clan_id).member;
         } catch (err) {
-            console.log("error on getClanPlayer on clanManager err:" + err);
+            console.log("[Error] error on getClanPlayer on clanManager, err:" + err);
         }
     }
 
