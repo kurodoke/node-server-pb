@@ -42,14 +42,15 @@ class Database{
         this._connection = new Sequelize({
             dialect: "postgres",
             host: AuthSettingDatabase.dbHost ? AuthSettingDatabase.dbHost : "localhost",
-            password: AuthSettingDatabase.dbPass ? AuthSettingDatabase.dbPass : "123456",
+            password: AuthSettingDatabase.dbPass ? AuthSettingDatabase.dbPass.toString() : "123456",
             port: AuthSettingDatabase.dbPort ? AuthSettingDatabase.dbPort : 5432,
             database: AuthSettingDatabase.dbName ? AuthSettingDatabase.dbName : 'postgres',
             username: AuthSettingDatabase.dbUser ? AuthSettingDatabase.dbUser : "postgres",
-            logging: AuthSettingServer.debugMode ? true : false,
+            logging: AuthSettingServer.debugMode ? console.log : false,
         })
         // this._connection = new Sequelize('postgres://postgres:123456@localhost:5432/nodepb');
         
+
         /**
          * model configuration
          */

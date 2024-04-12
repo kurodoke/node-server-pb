@@ -48,8 +48,8 @@ export class IniParser {
                 if (!isNaN(obj[key])) {
                     obj[key] = Number(obj[key]);
                 }
-                else if (obj[key] === "true" || obj[key] === "false") {
-                    obj[key] = Boolean(obj[key]);
+                else if (obj[key] == "true" || obj[key] == "false") {
+                    obj[key] = (obj[key] == "true") ? true : false;
                 }
             }
         }

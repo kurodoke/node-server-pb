@@ -5,6 +5,7 @@ import { Database } from "./util/database";
 import { ClientManager } from "./manager/clientManager";
 import { AuthSettingServer } from "./config/authSettingServer";
 import { MapsXML } from "./data/loader/mapsXML";
+import { MissionPb } from "./data/loader/missionPb";
 
 
 
@@ -74,14 +75,18 @@ class Server {
         /**
          * config the server
          */
-        AuthSettingServer.load()
+        AuthSettingServer.load();
 
 
         /**
          * load maps
          */
         MapsXML.load();
-        
+
+        /**
+         * load missions
+         */
+        MissionPb.load();
 
         this.DB = Database.getInstance();
     }

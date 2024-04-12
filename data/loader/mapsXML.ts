@@ -16,7 +16,7 @@ export class MapsXML{
     public static mapList9: number;  
 
     static load(){
-        let data = XmlParser.getInstance().load(path.resolve() + "/data/xml/maps/maps.xml")["data"];
+        let data = XmlParser.getInstance().load(path.resolve() + "/data/file/maps/maps.xml")["data"];
         
         if(data){
             data["map"].map((_map) => {

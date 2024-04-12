@@ -28,7 +28,7 @@ export class AuthSettingServer{
     private constructor(){}
 
     public static load(): void{
-        let data = IniParser.getInstance().load(path.resolve() + "/data/ini/auth.ini");
+        let data = IniParser.getInstance().load(path.resolve() + "/data/file/config/auth.ini");
 
         try {
             AuthSettingServer.serverIp = data["authIp"];
