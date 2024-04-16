@@ -1,4 +1,4 @@
-import { BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
+import { BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
 import { PlayerInstance } from './player';
 
 /**
@@ -7,20 +7,22 @@ import { PlayerInstance } from './player';
 interface PlayerStatAttributes{
     playerId: number;
     match: number;
-    match_wons: number;
-    match_losts: number;
-    kills_count: number;
-    deaths_count: number;
+    matchWons: number;
+    matchLosts: number;
+    killsCount: number;
+    deathsCount: number;
     escapes: number;
-    draws: number;
+    matchDraws: number;
+    headShotsCount: number;
 }
 
 /**
  * this combine the attribute interface with model,
  * so we can use this interface as referencee for the model
  */
-interface PlayerStatInstance extends Model<PlayerStatAttributes>, PlayerStatAttributes {
-    getPlayer(): Promise<PlayerInstance>;
+export interface PlayerStatInstance extends Model<PlayerStatAttributes>, PlayerStatAttributes {
+    getPlayer: BelongsToGetAssociationMixin<PlayerInstance>;
+    createPlayer: BelongsToCreateAssociationMixin<PlayerInstance>;
 }
 
 /**
@@ -45,31 +47,43 @@ export function PlayerStatModel(sequelize: Sequelize): PlayerStatModelStatic{
         match:{
             type: DataTypes.INTEGER,
             allowNull: false,
+            defaultValue: 0,
         },
-        match_wons:{
+        matchWons:{
             type: DataTypes.INTEGER,
             allowNull: false,
+            defaultValue: 0,
         },
-        match_losts:{
+        matchLosts:{
             type: DataTypes.INTEGER,
             allowNull: false,
+            defaultValue: 0,
         },
-        kills_count:{
+        killsCount:{
             type: DataTypes.INTEGER,
             allowNull: false,
+            defaultValue: 0,
         },
-        deaths_count:{
+        deathsCount:{
             type: DataTypes.INTEGER,
             allowNull: false,
+            defaultValue: 0,
         },
         escapes:{
             type: DataTypes.INTEGER,
             allowNull: false,
+            defaultValue: 0,
         },
-        draws:{
+        matchDraws:{
             type: DataTypes.INTEGER,
             allowNull: false,
+            defaultValue: 0,
         },
+        headShotsCount: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0,
+        }
     })
 }
 
@@ -79,21 +93,23 @@ export function PlayerStatModel(sequelize: Sequelize): PlayerStatModelStatic{
 export class PlayerStat implements PlayerStatAttributes {
     declare playerId: number;
     declare match: number;
-    declare match_wons: number;
-    declare match_losts: number;
-    declare kills_count: number;
-    declare deaths_count: number;
+    declare matchWons: number;
+    declare matchLosts: number;
+    declare killsCount: number;
+    declare deathsCount: number;
     declare escapes: number;
-    declare draws: number;
+    declare matchDraws: number;
+    declare headShotsCount: number;
 
     constructor(playerStat: PlayerStatAttributes) {
         this.playerId = playerStat.playerId;
         this.match = playerStat.match;
-        this.match_wons = playerStat.match_wons;
-        this.match_losts = playerStat.match_losts;
-        this.kills_count = playerStat.kills_count;
-        this.deaths_count = playerStat.deaths_count;
+        this.matchWons = playerStat.matchWons;
+        this.matchLosts = playerStat.matchLosts;
+        this.killsCount = playerStat.killsCount;
+        this.deathsCount = playerStat.deathsCount;
         this.escapes = playerStat.escapes;
-        this.draws = playerStat.draws;
+        this.matchDraws = playerStat.matchDraws;
+        this.headShotsCount = playerStat.headShotsCount;
     }
 }

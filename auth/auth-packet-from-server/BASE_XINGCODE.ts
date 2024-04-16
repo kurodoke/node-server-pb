@@ -1,4 +1,4 @@
-import { Packet } from "../../core-network/packet";
+import { Packet } from "../../network/packet";
 
 class BASE_XINGCODE extends Packet{
     constructor(opcode: number){

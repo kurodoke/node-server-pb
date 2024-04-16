@@ -1,5 +1,5 @@
-import { Connection } from "../../core-network/connection";
-import { Packet } from "../../core-network/packet";
+import { Connection } from "../../network/connection";
+import { Packet } from "../../network/packet";
 
 class BASE_SERVER_LIST_PAK extends Packet {
     private _connection: Connection;

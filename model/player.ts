@@ -1,12 +1,16 @@
-import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
-import { CountryEnum } from "../enum/CountryEnum";
-import { ClanRoleEnum } from "../enum/ClanRoleEnum";
+import { BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BelongsToManyAddAssociationMixin, BelongsToManyAddAssociationsMixin, BelongsToManyGetAssociationsMixin, BuildOptions, DataTypes, HasOneCreateAssociationMixin, HasOneGetAssociationMixin, Model, Sequelize } from "sequelize";
 import { AccessLevelEnum } from "../enum/AccessLevelEnum";
-import { Equipment } from "./equipment";
-import { PlayerStat } from "./playerStat";
-import { Mission } from "./mission";
-import { Title } from "./title";
+import { ClanRoleEnum } from "../enum/ClanRoleEnum";
+import { CountryEnum } from "../enum/CountryEnum";
+import { AccountInstance } from "./account";
+import { ClanInstance } from "./clan";
+import { Coupon, CouponInstance } from "./coupon";
+import { Equipment, EquipmentInstance } from "./equipment";
 import { Inventory } from "./inventory";
+import { ItemInstance } from "./item";
+import { Mission, MissionInstance } from "./mission";
+import { PlayerStat, PlayerStatInstance } from "./playerStat";
+import { Title, TitleInstance } from "./title";
 
 /**
  * base attribute of the model
@@ -19,31 +23,64 @@ export interface PlayerAttributes{
     cash: number;
     exp: number;
     color: number;
-    clan_id: number;
+    clanId: number;
     ribbon: number;
     ensign: number;
     medal: number;
-    master_medal: number;
-    mission_1: number;
-    mission_2: number;
-    mission_3: number;
-    mission_4: number;
-    tourney_level: number;
-    clan_date: number;
-    access_level: number;
+    masterMedal: number;
+    mission1: number;
+    mission2: number;
+    mission3: number;
+    mission4: number;
+    tourneyLevel: number;
+    clanDate: number;
+    accessLevel: number;
     role: number;
     online: number;
-    last_up: number;
+    lastUp: number;
     country: number | null;
-    clan_invited: number | null;
-    time_get_cash: string | null;
+    invitedClanId: number | null;
+    lastTimeGetCash: string | null;
 }
 
 /**
  * this combine the attribute interface with model,
  * so we can use this interface as referencee for the model
  */
-export interface PlayerInstance extends Model<PlayerAttributes>, PlayerAttributes {}
+export interface PlayerInstance extends Model<PlayerAttributes>, PlayerAttributes {
+    //account
+    getAccount: BelongsToGetAssociationMixin<AccountInstance>;
+    createAccount: BelongsToCreateAssociationMixin<AccountInstance>;
+
+    //clan
+    getClan: HasOneGetAssociationMixin<ClanInstance>;
+    createClan: HasOneCreateAssociationMixin<ClanInstance>;
+
+    //coupon
+    getCoupon: HasOneGetAssociationMixin<CouponInstance>;
+    createCoupon: HasOneCreateAssociationMixin<CouponInstance>;
+
+    //equipment
+    getEquipment: BelongsToGetAssociationMixin<EquipmentInstance>;
+    createEquipment: BelongsToCreateAssociationMixin<EquipmentInstance>;
+
+    //item
+    getItem: BelongsToManyGetAssociationsMixin<ItemInstance>;
+    addItem: BelongsToManyAddAssociationMixin<ItemInstance, number>;
+    addItems: BelongsToManyAddAssociationsMixin<ItemInstance, number>;
+
+    //mission
+    getMission: BelongsToGetAssociationMixin<MissionInstance>;
+    createMission: BelongsToCreateAssociationMixin<MissionInstance>;
+
+    //playerstat
+    getPlayer_stat: BelongsToGetAssociationMixin<PlayerStatInstance>;
+    createPlayer_stat: BelongsToCreateAssociationMixin<PlayerStatInstance>;
+
+    //title
+    getTitle: BelongsToGetAssociationMixin<TitleInstance>;
+    createTitle: BelongsToCreateAssociationMixin<TitleInstance>;
+}
 
 /**
  * the model static of the model,
@@ -94,7 +131,7 @@ export function PlayerModel(sequelize: Sequelize) : PlayerModelStatic {
             defaultValue: 0,
             allowNull: false,
         },
-        clan_id: {
+        clanId: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
             allowNull: false,
@@ -114,42 +151,42 @@ export function PlayerModel(sequelize: Sequelize) : PlayerModelStatic {
             defaultValue: 0,
             allowNull: false,
         },
-        master_medal: {
+        masterMedal: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
             allowNull: false,
         },
-        mission_1: {
+        mission1: {
             type: DataTypes.INTEGER,
             defaultValue: 1,
             allowNull: false,
         },
-        mission_2: {
+        mission2: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
             allowNull: false,
         },
-        mission_3: {
+        mission3: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
             allowNull: false,
         },
-        mission_4: {
+        mission4: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
             allowNull: false,
         },
-        tourney_level: {
+        tourneyLevel: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
             allowNull: false,
         },
-        clan_date: {
+        clanDate: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
             allowNull: false,
         },
-        access_level: {
+        accessLevel: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
             allowNull: false,
@@ -164,7 +201,7 @@ export function PlayerModel(sequelize: Sequelize) : PlayerModelStatic {
             defaultValue: 0,
             allowNull: false,
         },
-        last_up: {
+        lastUp: {
             type: DataTypes.INTEGER,
             defaultValue: 1010000,
             allowNull: false,
@@ -174,12 +211,12 @@ export function PlayerModel(sequelize: Sequelize) : PlayerModelStatic {
             defaultValue: 31,
             allowNull: true,
         },
-        clan_invited: {
+        invitedClanId: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
             allowNull: true,
         },
-        time_get_cash: {
+        lastTimeGetCash: {
             type: DataTypes.DATE,
             allowNull: true,
             defaultValue: null,
@@ -198,24 +235,24 @@ export class Player implements PlayerAttributes {
     declare cash: number;
     declare exp: number;
     declare color: number;
-    declare clan_id: number;
+    declare clanId: number;
     declare ribbon: number;
     declare ensign: number;
     declare medal: number;
-    declare master_medal: number;
-    declare mission_1: number;
-    declare mission_2: number;
-    declare mission_3: number;
-    declare mission_4: number;
-    declare tourney_level: number;
-    declare clan_date: number;
-    declare access_level: AccessLevelEnum;
+    declare masterMedal: number;
+    declare mission1: number;
+    declare mission2: number;
+    declare mission3: number;
+    declare mission4: number;
+    declare tourneyLevel: number;
+    declare clanDate: number;
+    declare accessLevel: AccessLevelEnum;
     declare role: ClanRoleEnum;
     declare online: number;
-    declare last_up: number;
+    declare lastUp: number;
     declare country: CountryEnum | null;
-    declare clan_invited: number | null;
-    declare time_get_cash: string | null;
+    declare invitedClanId: number | null;
+    declare lastTimeGetCash: string | null;
 
     public IPAddress: string; //inet
     public minutePlayed: Date;
@@ -224,10 +261,11 @@ export class Player implements PlayerAttributes {
     public playerMission: Mission;
     public playerStat: PlayerStat;
     public playerEquipment: Equipment;
+    public playerCoupon: Coupon;
     
     public playerInventory: Array<Inventory> = new Array();
 
-
+    public client_version: number = 38;
 
     constructor(player: PlayerAttributes) {
         this.id = player.id;
@@ -237,32 +275,32 @@ export class Player implements PlayerAttributes {
         this.cash = player.cash;
         this.exp = player.exp;
         this.color = player.color;
-        this.clan_id = player.clan_id;
+        this.clanId = player.clanId;
         this.ribbon = player.ribbon;
         this.ensign = player.ensign;
         this.medal = player.medal;
-        this.master_medal = player.master_medal;
-        this.mission_1 = player.mission_1;
-        this.mission_2 = player.mission_2;
-        this.mission_3 = player.mission_3;
-        this.mission_4 = player.mission_4;
-        this.tourney_level = player.tourney_level;
-        this.clan_date = player.clan_date;
-        this.access_level = player.access_level;
+        this.masterMedal = player.masterMedal;
+        this.mission1 = player.mission1;
+        this.mission2 = player.mission2;
+        this.mission3 = player.mission3;
+        this.mission4 = player.mission4;
+        this.tourneyLevel = player.tourneyLevel;
+        this.clanDate = player.clanDate;
+        this.accessLevel = player.accessLevel;
         this.role = player.role;
         this.online = player.online;
-        this.last_up = player.last_up;
+        this.lastUp = player.lastUp;
         this.country = player.country;
-        this.clan_invited = player.clan_invited;
-        this.time_get_cash = player.time_get_cash;
+        this.invitedClanId = player.invitedClanId;
+        this.lastTimeGetCash = player.lastTimeGetCash;
     }
 
     clan(): number{
-        return this.clan_id > 0 ? this.clan_id : this.clan_invited;  
+        return this.clanId > 0 ? this.clanId : this.invitedClanId;  
     }
 
     clanRole(): number{
-        return this.clan_id > 0 ? this.role : ClanRoleEnum.MEMBER_UNKNOWN;
+        return this.clanId > 0 ? this.role : ClanRoleEnum.MEMBER_UNKNOWN;
     }
     
     status(): number{

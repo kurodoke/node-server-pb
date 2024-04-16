@@ -4,7 +4,7 @@ import { BASE_SERVER_LIST_PAK } from "../auth-packet-from-server/BASE_SERVER_LIS
 import { BASE_LOGIN_REQ_PAK } from "../auth-packet-from-client/BASE_LOGIN_REQ_PAK";
 import { BASE_XINGCODE_REQ_PAK } from "../auth-packet-from-client/BASE_XINGCODE_REQ_PAK";
 import { PacketOpcodeServer } from "../../enum/PacketOpcodeServer";
-import { Player } from '../../model/player';
+import { BASE_MYINFO_REQ_PAK } from "../auth-packet-from-client/BASE_MYINFO_REQ_PAK";
 
 type TypePacketFrom = "client" | "server";
 
@@ -51,6 +51,8 @@ class AuthPacket{
             }
         }
         if (this.packetFrom == "client" && data){
+            console.log("packet received opcode: " + opcode);
+            
             switch(opcode){
                 case 2561:
                     packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
@@ -60,32 +62,37 @@ class AuthPacket{
                     packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
                     this.setPacket(packet);
                     break;
-                case 2572:
+                case 2565: 
+                    packet = new BASE_MYINFO_REQ_PAK(opcode, data, this.connection);
+                    break;
+                case 2570: break;
+                case 2575: break;
+                // case 2582:
+                //     packet = new BASE_XINGCODE_REQ_PAK(opcode, data);
+                //     this.setPacket(packet);
+                //     break;
+                // case 2584:
+                //     packet = new BASE_XINGCODE_REQ_PAK(opcode, data);
+                //     this.setPacket(packet);
+                //     break;
+                case 2614: break;
+                case 2672:
                     packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
                     this.setPacket(packet);
                     break;
-                case 2573:
+                case 2673:
                     packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
                     this.setPacket(packet);
                     break;
-                case 2582:
-                    packet = new BASE_XINGCODE_REQ_PAK(opcode, data);
-                    this.setPacket(packet);
-                    break;
-                case 2584:
-                    packet = new BASE_XINGCODE_REQ_PAK(opcode, data);
-                    this.setPacket(packet);
-                    break;
+                    
                 default:
+                    this.connection.socket.end(()=>{
+                        console.log("[Error] Packet not found with opcode:" + opcode);
+                    })
                     break;
             }
         }
-        if(packet == null){
-            this.connection.socket.end(()=>{
-                console.log("[Error] Packet not found with opcode:" + opcode);
-            })
-
-        }
+        if(packet == null){}
         return packet;
     }
 

@@ -1,10 +1,17 @@
-import { BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
-import { ItemInstance } from './item';
+import {
+    BelongsToCreateAssociationMixin,
+    BelongsToGetAssociationMixin,
+    BuildOptions,
+    DataTypes,
+    Model,
+    Sequelize,
+} from "sequelize";
+import { ItemInstance } from "./item";
 
 /**
  * base attribute of the model
  */
-interface StoreAttributes{
+interface StoreAttributes {
     itemId: number;
     name: string;
     point: number;
@@ -19,7 +26,8 @@ interface StoreAttributes{
  * so we can use this interface as referencee for the model
  */
 export interface StoreInstance extends Model<StoreAttributes>, StoreAttributes {
-    getItem(): ItemInstance;
+    getItem: BelongsToGetAssociationMixin<ItemInstance>;
+    createItem: BelongsToCreateAssociationMixin<ItemInstance>;
 }
 
 /**
@@ -27,45 +35,49 @@ export interface StoreInstance extends Model<StoreAttributes>, StoreAttributes {
  * actually we can use the ModelStatic<M extends Model> instead of this,
  * i prefer this for great readability
  */
-export type StoreModelStatic = typeof Model
-    & { new(values?: Record<string, unknown>, options?: BuildOptions): StoreInstance }
+export type StoreModelStatic = typeof Model & {
+    new (
+        values?: Record<string, unknown>,
+        options?: BuildOptions
+    ): StoreInstance;
+};
 
 /**
  *
  * @param sequelize database connection
  * @returns ModelStatic
  */
-export function StoreModel(sequelize: Sequelize): StoreModelStatic{
+export function StoreModel(sequelize: Sequelize): StoreModelStatic {
     return <StoreModelStatic>sequelize.define<StoreInstance>("store", {
-        itemId:{
-            type:DataTypes.INTEGER,
-            allowNull: false,
-        },
-        point:{
-            type:DataTypes.INTEGER,
-            allowNull: false,
-        },
-        cash:{
-            type:DataTypes.INTEGER,
-            allowNull: false,
-        },
-        tag:{
-            type:DataTypes.STRING,
-            allowNull: false,
-        },
-        count:{
+        itemId: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        type:{
+        point: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        name:{
+        cash: {
             type: DataTypes.INTEGER,
             allowNull: false,
-        }
-    })
+        },
+        tag: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        count: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        type: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        name: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+    });
 }
 
 /**

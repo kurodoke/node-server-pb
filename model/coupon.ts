@@ -1,15 +1,15 @@
-import { BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
+import { BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
 import { PlayerInstance } from './player';
 
 /**
  * base attribute of the model
  */
-interface CouponAttributes{
+export interface CouponAttributes{
     playerId: number;
-    crosshair_color: number;
-    chat_color: number;
-    false_name: string;
-    false_rank: number;
+    crosshairColor: number;
+    chatColor: number;
+    falseName: string;
+    falseRank: number;
 }
 
 /**
@@ -17,7 +17,8 @@ interface CouponAttributes{
  * so we can use this interface as referencee for the model
  */
 export interface CouponInstance extends Model<CouponAttributes>, CouponAttributes {
-    getPlayer(): PlayerInstance;
+    getPlayer: BelongsToGetAssociationMixin<PlayerInstance>;
+    createPlayer: BelongsToCreateAssociationMixin<PlayerInstance>;
 }
 
 /**
@@ -40,23 +41,25 @@ export function CouponModel(sequelize: Sequelize): CouponModelStatic{
             allowNull: false,
             primaryKey: true,
         },
-        crosshair_color:{
-            type:DataTypes.INTEGER,
-            allowNull: false,
-        },
-        chat_color:{
+        crosshairColor:{
             type:DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0,
         },
-        false_name:{
+        chatColor:{
+            type:DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0,
+        },
+        falseName:{
             type:DataTypes.STRING,
             allowNull: false,
             defaultValue: '',
         },
-        false_rank:{
+        falseRank:{
             type: DataTypes.INTEGER,
             allowNull: false,
+            defaultValue: 55
         },
     })
 }
@@ -65,17 +68,17 @@ export function CouponModel(sequelize: Sequelize): CouponModelStatic{
  * this is clan object from each instance of coupon in database
  */
 export class Coupon implements CouponAttributes {
-    declare chat_color: number;
-    declare crosshair_color: number;
-    declare false_name: string;
-    declare false_rank: number;
+    declare chatColor: number;
+    declare crosshairColor: number;
+    declare falseName: string;
+    declare falseRank: number;
     declare playerId: number;
 
     constructor(coupon: CouponAttributes) {
-        this.chat_color = coupon.chat_color;
-        this.crosshair_color = coupon.crosshair_color;
-        this.false_name = coupon.false_name;
-        this.false_rank = coupon.false_rank;
+        this.chatColor = coupon.chatColor;
+        this.crosshairColor = coupon.crosshairColor;
+        this.falseName = coupon.falseName;
+        this.falseRank = coupon.falseRank;
         this.playerId = coupon.playerId;
     }
 }

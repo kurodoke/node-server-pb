@@ -1,23 +1,21 @@
 import {
-    BuildOptions,
-    DataTypes,
-    Model,
-    Sequelize,
+    BuildOptions, DataTypes, HasOneCreateAssociationMixin, HasOneGetAssociationMixin, Model,
+    Sequelize
 } from "sequelize";
-import { PlayerInstance } from "./player";
 import { Database } from "../util/database";
+import { PlayerInstance } from "./player";
 
 /**
  * base attribute of the model
  */
-interface AccountAttributes {
+export interface AccountAttributes {
     id: number;
     username: string;
     password: string;
-    userfilelist: string;
+    userFileList: string;
     ip: string;
     mac: string;
-    client_version: string;
+    clientVersion: string;
     port: number;
     active: boolean;
 }
@@ -26,8 +24,11 @@ interface AccountAttributes {
  * this combine the attribute interface with model,
  * so we can use this interface as referencee for the model
  */
-interface AccountInstance extends Model<AccountAttributes>, AccountAttributes {
-    getPlayer(): Promise<PlayerInstance>;
+export interface AccountInstance
+    extends Model<AccountAttributes>,
+        AccountAttributes {
+    getPlayer: HasOneGetAssociationMixin<PlayerInstance>;
+    createPlayer: HasOneCreateAssociationMixin<PlayerInstance>;
 }
 
 /**
@@ -62,7 +63,7 @@ export function AccountModel(sequelize: Sequelize): AccountModelStatic {
         password: {
             type: DataTypes.STRING,
         },
-        userfilelist: {
+        userFileList: {
             type: DataTypes.STRING,
         },
         ip: {
@@ -71,7 +72,7 @@ export function AccountModel(sequelize: Sequelize): AccountModelStatic {
         mac: {
             type: DataTypes.STRING,
         },
-        client_version: {
+        clientVersion: {
             type: DataTypes.STRING,
         },
         port: {
@@ -90,10 +91,10 @@ export class Account implements AccountAttributes {
     declare id: number;
     declare username: string;
     declare password: string;
-    declare userfilelist: string;
+    declare userFileList: string;
     declare ip: string;
     declare mac: string;
-    declare client_version: string;
+    declare clientVersion: string;
     declare port: number;
     declare active: boolean;
 
@@ -101,10 +102,10 @@ export class Account implements AccountAttributes {
         this.id = account.id;
         this.username = account.username;
         this.password = account.password;
-        this.userfilelist = account.userfilelist;
+        this.userFileList = account.userFileList;
         this.ip = account.ip;
         this.mac = account.mac;
-        this.client_version = account.client_version;
+        this.clientVersion = account.clientVersion;
         this.port = account.port;
         this.active = account.active;
     }

@@ -1,10 +1,10 @@
-import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
+import { BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
 import { PlayerInstance } from "./player";
 
 /**
  * base attribute of the model
  */
-interface TitleAttributes {
+export interface TitleAttributes {
     playerId: number;
     title_1: number;
     title_2: number;
@@ -60,8 +60,9 @@ interface TitleAttributes {
  * this combine the attribute interface with model,
  * so we can use this interface as referencee for the model
  */
-interface TitleInstance extends Model<TitleAttributes>, TitleAttributes {
-    getPlayer(): Promise<PlayerInstance>;
+export interface TitleInstance extends Model<TitleAttributes>, TitleAttributes {
+    getPlayer: BelongsToGetAssociationMixin<PlayerInstance>;
+    createPlayer: BelongsToCreateAssociationMixin<PlayerInstance>;
 }
 
 /**

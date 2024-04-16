@@ -1,11 +1,13 @@
-import { BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
+import { BuildOptions, DataTypes, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyGetAssociationsMixin, Model, Sequelize } from 'sequelize';
+import { PlayerInstance } from './player';
+import { StoreInstance } from './store';
 
 type TypeItem = "DAYS" | "UNITS";
 
 /**
  * base attribute of the model
  */
-interface ItemAttributes{
+export interface ItemAttributes{
     id: number;
     name: string;
     type: TypeItem;
@@ -16,7 +18,15 @@ interface ItemAttributes{
  * this combine the attribute interface with model,
  * so we can use this interface as referencee for the model
  */
-export interface ItemInstance extends Model<ItemAttributes>, ItemAttributes {}
+export interface ItemInstance extends Model<ItemAttributes>, ItemAttributes {
+    getStore: HasManyGetAssociationsMixin<StoreInstance>;
+    addStore: HasManyAddAssociationMixin<StoreInstance, number>;
+    addStores: HasManyAddAssociationsMixin<StoreInstance, number>;
+
+    getPlayer: HasManyGetAssociationsMixin<PlayerInstance>;
+    addPlayer: HasManyAddAssociationMixin<PlayerInstance, number>;
+    addPlayers: HasManyAddAssociationsMixin<PlayerInstance, number>;
+}
 
 /**
  * the model static of the model,

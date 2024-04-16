@@ -53,22 +53,23 @@ class AuthClient {
     }
 
     sendPacket(packetToSend: Packet) {
-        packetToSend.buf = Buffer.alloc(0);
+        packetToSend.init().then(() => {
+            packetToSend.buf = Buffer.alloc(0);
 
-        packetToSend.writeH(packetToSend.opcode)
-
-        packetToSend.write(); //write packet to buffer
-
-        if (packetToSend.buf.length < 2) return;
-
-        const buf_packetSize = Buffer.alloc(2); //allocate 2 byte 00 00
-        buf_packetSize.writeUInt8(packetToSend.buf.length - 2); //fill the byte with size
-
-        const data = Buffer.concat([buf_packetSize, packetToSend.buf]); //combine the packet before with the payload
-        
-        this.connection.socket.write(data);
-        console.log("[Info] Packet sent with opcode : " + packetToSend.opcode);
-        
+            packetToSend.writeH(packetToSend.opcode)
+    
+            packetToSend.write(); //write packet to buffer
+    
+            if (packetToSend.buf.length < 2) return;
+    
+            const buf_packetSize = Buffer.alloc(2); //allocate 2 byte 00 00
+            buf_packetSize.writeUInt8(packetToSend.buf.length - 2); //fill the byte with size
+    
+            const data = Buffer.concat([buf_packetSize, packetToSend.buf]); //combine the packet before with the payload
+            
+            this.connection.socket.write(data);
+            console.log("[Info] Packet sent with opcode : " + packetToSend.opcode);
+        });
     }
 
     async readPacket(packetToRead: Packet){

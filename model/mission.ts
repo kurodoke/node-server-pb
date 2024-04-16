@@ -1,28 +1,29 @@
-import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
+import { BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
 import { PlayerInstance } from "./player";
 
 /**
  * base attribute of the model
  */
-interface MissionAttributes{
+export interface MissionAttributes{
     playerId: number;
-    mission_1: Buffer;
-    mission_2: Buffer;
-    mission_3: Buffer;
-    mission_4: Buffer;
-    card_1: number;
-    card_2: number;
-    card_3: number;
-    card_4: number;
-    active_mission: number;
+    mission1: Buffer;
+    mission2: Buffer;
+    mission3: Buffer;
+    mission4: Buffer;
+    card1: number;
+    card2: number;
+    card3: number;
+    card4: number;
+    activeMission: number;
 }
 
 /**
  * this combine the attribute interface with model,
  * so we can use this interface as referencee for the model
  */
-interface MissionInstance extends Model<MissionAttributes>, MissionAttributes {
-    getPlayer(): Promise<PlayerInstance>;
+export interface MissionInstance extends Model<MissionAttributes>, MissionAttributes {
+    getPlayer: BelongsToGetAssociationMixin<PlayerInstance>;
+    createPlayer: BelongsToCreateAssociationMixin<PlayerInstance>;
 }
 
 /**
@@ -44,47 +45,47 @@ export function MissionModel(sequelize: Sequelize) : MissionModelStatic{
             type:DataTypes.INTEGER,
             allowNull: false,
         },
-        mission_1: {
+        mission1: {
             type: DataTypes.BLOB("medium"),
             allowNull: false,
             defaultValue: Buffer.alloc(1, 0),
         },
-        mission_2: {
+        mission2: {
             type: DataTypes.BLOB("medium"),
             allowNull: false,
             defaultValue: Buffer.alloc(1, 0),
         },
-        mission_3: {
+        mission3: {
             type: DataTypes.BLOB("medium"),
             allowNull: false,
             defaultValue: Buffer.alloc(1, 0),
         },
-        mission_4: {
+        mission4: {
             type: DataTypes.BLOB("medium"),
             allowNull: false,
             defaultValue: Buffer.alloc(1, 0),
         },
-        card_1: {
+        card1: {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0,
         },
-        card_2: {
+        card2: {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0,
         },
-        card_3: {
+        card3: {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0,
         },
-        card_4: {
+        card4: {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0,
         },
-        active_mission: {
+        activeMission: {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0,
@@ -97,26 +98,26 @@ export function MissionModel(sequelize: Sequelize) : MissionModelStatic{
  */
 export class Mission implements MissionAttributes {
     declare playerId: number;
-    declare mission_1: Buffer;
-    declare mission_2: Buffer;
-    declare mission_3: Buffer;
-    declare mission_4: Buffer;
-    declare card_1: number;
-    declare card_2: number;
-    declare card_3: number;
-    declare card_4: number;
-    declare active_mission: number;
+    declare mission1: Buffer;
+    declare mission2: Buffer;
+    declare mission3: Buffer;
+    declare mission4: Buffer;
+    declare card1: number;
+    declare card2: number;
+    declare card3: number;
+    declare card4: number;
+    declare activeMission: number;
 
     constructor(mission: MissionAttributes) {
         this.playerId = mission.playerId;
-        this.mission_1 = mission.mission_1;
-        this.mission_2 = mission.mission_2;
-        this.mission_3 = mission.mission_3;
-        this.mission_4 = mission.mission_4;
-        this.card_1 = mission.card_1;
-        this.card_2 = mission.card_2;
-        this.card_3 = mission.card_3;
-        this.card_4 = mission.card_4;
-        this.active_mission = mission.active_mission;
+        this.mission1 = mission.mission1;
+        this.mission2 = mission.mission2;
+        this.mission3 = mission.mission3;
+        this.mission4 = mission.mission4;
+        this.card1 = mission.card1;
+        this.card2 = mission.card2;
+        this.card3 = mission.card3;
+        this.card4 = mission.card4;
+        this.activeMission = mission.activeMission;
     }
 }

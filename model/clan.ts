@@ -1,36 +1,34 @@
-import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
-import { ClanLevelEnum } from "../enum/ClanLevelEnum";
+import { BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
 import { Player, PlayerInstance } from "./player";
-import { Database } from "../util/database";
 
 /**
  * base attribute of the model
  */
-interface ClanAttributes {
+export interface ClanAttributes {
     id: number;
     owner: number;
-    clan_name: string;
-    clan_notice: string;
-    clan_info: string;
-    clan_rank: number;
+    clanName: string;
+    clanNotice: string;
+    clanInfo: string;
+    clanRank: number;
     logo: number;
     color: number;
-    clan_match: number;
-    clan_won: number;
-    clan_lost: number;
+    clanMatchs: number;
+    clanMatchWons: number;
+    clanMatchLosts: number;
     authority: number;
-    limit_rank: number;
-    limit_age: number;
-    limit_age_2: number;
+    limitRank: number;
+    limitAge: number;
+    limitAge2: number;
     point: number;
     vacancies: number;
     exp: number;
     data: number;
-    player_best_won: number;
-    player_best_kills: number;
-    player_best_headshots: number;
-    player_best_exp: number;
-    player_best_participation: number;
+    playerBestMatchWon: number;
+    playerBestKills: number;
+    playerBestHeadshots: number;
+    playerBestExps: number;
+    playerBestParticipation: number;
     url: string;
 }
 
@@ -38,8 +36,9 @@ interface ClanAttributes {
  * this combine the attribute interface with model,
  * so we can use this interface as referencee for the model
  */
-interface ClanInstance extends Model<ClanAttributes>, ClanAttributes {
-    getPlayer(): Promise<PlayerInstance>;
+export interface ClanInstance extends Model<ClanAttributes>, ClanAttributes {
+    getPlayer: BelongsToGetAssociationMixin<PlayerInstance>;
+    createPlayer: BelongsToCreateAssociationMixin<PlayerInstance>;
 }
 
 /**
@@ -71,22 +70,22 @@ export function ClanModel(sequelize: Sequelize): ClanModelStatic {
             unique: true,
             allowNull: false,
         },
-        clan_name: {
+        clanName: {
             type: DataTypes.STRING,
             allowNull: false,
             defaultValue: "",
         },
-        clan_notice: {
+        clanNotice: {
             type: DataTypes.STRING,
             allowNull: false,
             defaultValue: "",
         },
-        clan_info: {
+        clanInfo: {
             type: DataTypes.STRING,
             allowNull: false,
             defaultValue: "",
         },
-        clan_rank: {
+        clanRank: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
@@ -98,15 +97,15 @@ export function ClanModel(sequelize: Sequelize): ClanModelStatic {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
-        clan_match: {
+        clanMatchs: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
-        clan_won: {
+        clanMatchWons: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
-        clan_lost: {
+        clanMatchLosts: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
@@ -114,15 +113,15 @@ export function ClanModel(sequelize: Sequelize): ClanModelStatic {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
-        limit_rank: {
+        limitRank: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
-        limit_age: {
+        limitAge: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
-        limit_age_2: {
+        limitAge2: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
@@ -142,23 +141,23 @@ export function ClanModel(sequelize: Sequelize): ClanModelStatic {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
-        player_best_won: {
+        playerBestMatchWon: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
-        player_best_kills: {
+        playerBestKills: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
-        player_best_headshots: {
+        playerBestHeadshots: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
-        player_best_exp: {
+        playerBestExps: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
-        player_best_participation: {
+        playerBestParticipation: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
@@ -175,28 +174,28 @@ export function ClanModel(sequelize: Sequelize): ClanModelStatic {
 export class Clan implements ClanAttributes {
     public id: number = 0;
     public owner: number = null;
-    public clan_name: string = "";
-    public clan_notice: string = "";
-    public clan_info: string = "";
-    public clan_rank: number = 0;
+    public clanName: string = "";
+    public clanNotice: string = "";
+    public clanInfo: string = "";
+    public clanRank: number = 0;
     public logo: number = 0;
     public color: number = 0;
-    public clan_match: number = 0;
-    public clan_won: number = 0;
-    public clan_lost: number = 0;
+    public clanMatchs: number = 0;
+    public clanMatchWons: number = 0;
+    public clanMatchLosts: number = 0;
     public authority: number = 0;
-    public limit_rank: number = 0;
-    public limit_age: number = 0;
-    public limit_age_2: number = 0;
+    public limitRank: number = 0;
+    public limitAge: number = 0;
+    public limitAge2: number = 0;
     public point: number = 1000;
     public vacancies: number = 50;
     public exp: number = 0;
     public data: number = 0;
-    public player_best_won: number = 0;
-    public player_best_kills: number = 0;
-    public player_best_headshots: number = 0;
-    public player_best_exp: number = 0;
-    public player_best_participation: number = 0;
+    public playerBestMatchWon: number = 0;
+    public playerBestKills: number = 0;
+    public playerBestHeadshots: number = 0;
+    public playerBestExps: number = 0;
+    public playerBestParticipation: number = 0;
     public url: string = "";
 
     private static _instanceList: Map<number, Clan> = new Map();
@@ -205,30 +204,32 @@ export class Clan implements ClanAttributes {
     countPlayer = -1;
 
     constructor(clan?: ClanAttributes) {
-        this.id = clan.id;
-        this.owner = clan.owner;
-        this.clan_name = clan.clan_name;
-        this.clan_notice = clan.clan_notice;
-        this.clan_info = clan.clan_info;
-        this.clan_rank = clan.clan_rank;
-        this.logo = clan.logo;
-        this.color = clan.color;
-        this.clan_match = clan.clan_match;
-        this.clan_won = clan.clan_won;
-        this.clan_lost = clan.clan_lost;
-        this.authority = clan.authority;
-        this.limit_rank = clan.limit_rank;
-        this.limit_age = clan.limit_age;
-        this.limit_age_2 = clan.limit_age_2;
-        this.point = clan.point;
-        this.vacancies = clan.vacancies;
-        this.exp = clan.exp;
-        this.data = clan.data;
-        this.player_best_won = clan.player_best_won;
-        this.player_best_kills = clan.player_best_kills;
-        this.player_best_headshots = clan.player_best_headshots;
-        this.player_best_exp = clan.player_best_exp;
-        this.player_best_participation = clan.player_best_participation;
-        this.url = clan.url;
+        if(clan){
+            this.id = clan.id;
+            this.owner = clan.owner;
+            this.clanName = clan.clanName;
+            this.clanNotice = clan.clanNotice;
+            this.clanInfo = clan.clanInfo;
+            this.clanRank = clan.clanRank;
+            this.logo = clan.logo;
+            this.color = clan.color;
+            this.clanMatchs = clan.clanMatchs;
+            this.clanMatchWons = clan.clanMatchWons;
+            this.clanMatchLosts = clan.clanMatchLosts;
+            this.authority = clan.authority;
+            this.limitRank = clan.limitRank;
+            this.limitAge = clan.limitAge;
+            this.limitAge2 = clan.limitAge2;
+            this.point = clan.point;
+            this.vacancies = clan.vacancies;
+            this.exp = clan.exp;
+            this.data = clan.data;
+            this.playerBestMatchWon = clan.playerBestMatchWon;
+            this.playerBestKills = clan.playerBestKills;
+            this.playerBestHeadshots = clan.playerBestHeadshots;
+            this.playerBestExps = clan.playerBestExps;
+            this.playerBestParticipation = clan.playerBestParticipation;
+            this.url = clan.url;
+        }
     }
 }

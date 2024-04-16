@@ -240,6 +240,7 @@ class Packet implements IPacket{
 
     write(){}
     read(){}
+    async init(): Promise<void>{return;}
     async proc(): Promise<Packet[]>{return [this];}
 }
 

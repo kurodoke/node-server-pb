@@ -1,4 +1,4 @@
-import { Packet } from "../../core-network/packet";
+import { Packet } from "../../network/packet";
 import { BASE_XINGCODE } from "../auth-packet-from-server/BASE_XINGCODE";
 
 class BASE_XINGCODE_REQ_PAK extends Packet{

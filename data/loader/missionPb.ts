@@ -23,7 +23,6 @@ export class MissionPb {
     static load() {
         MissionPb.loadCard();
         MissionPb.loadCardAward();
-        let p = 1;
         MissionPb.loadMissionCardAward();
     }
 

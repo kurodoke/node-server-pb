@@ -1,20 +1,20 @@
-import { BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
+import { BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
 import { PlayerInstance } from './player';
 
 /**
  * base attribute of the model
  */
-interface EquipmentAttributes{
+export interface EquipmentAttributes{
     playerId: number;
     primary: number;
     secondary: number;
     melee: number;
     grenade: number;
     special: number;
-    char_red: number;
-    char_blue: number;
-    char_head: number;
-    char_beret: number;
+    charRed: number;
+    charBlue: number;
+    charHead: number;
+    charBeret: number;
     dino: number;
 };
 
@@ -22,8 +22,9 @@ interface EquipmentAttributes{
  * this combine the attribute interface with model,
  * so we can use this interface as referencee for the model
  */
-interface EquipmentInstance extends Model<EquipmentAttributes>, EquipmentAttributes {
-    getPlayer(): Promise<PlayerInstance>;
+export interface EquipmentInstance extends Model<EquipmentAttributes>, EquipmentAttributes {
+    getPlayer: BelongsToGetAssociationMixin<PlayerInstance>;
+    createPlayer: BelongsToCreateAssociationMixin<PlayerInstance>;
 }
 
 /**
@@ -70,22 +71,22 @@ export function EquipmentModel(sequelize: Sequelize): EquipmentModelStatic{
             allowNull: false,
             defaultValue: 904007002
         },
-        char_red: {
+        charRed: {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 1001001005
         },
-        char_blue: {
+        charBlue: {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 1001002006
         },
-        char_head: {
+        charHead: {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 1102003001
         },
-        char_beret: {
+        charBeret: {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0
@@ -108,10 +109,10 @@ export class Equipment implements EquipmentAttributes {
     declare melee: number;
     declare grenade: number;
     declare special: number;
-    declare char_red: number;
-    declare char_blue: number;
-    declare char_head: number;
-    declare char_beret: number;
+    declare charRed: number;
+    declare charBlue: number;
+    declare charHead: number;
+    declare charBeret: number;
     declare dino: number;
 
     constructor(equipment: EquipmentAttributes) {
@@ -121,10 +122,10 @@ export class Equipment implements EquipmentAttributes {
         this.melee = equipment.melee;
         this.grenade = equipment.grenade;
         this.special = equipment.special;
-        this.char_red = equipment.char_red;
-        this.char_blue = equipment.char_blue;
-        this.char_head = equipment.char_head;
-        this.char_beret = equipment.char_beret;
+        this.charRed = equipment.charRed;
+        this.charBlue = equipment.charBlue;
+        this.charHead = equipment.charHead;
+        this.charBeret = equipment.charBeret;
         this.dino = equipment.dino;
     }
 }

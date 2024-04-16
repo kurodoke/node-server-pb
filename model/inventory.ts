@@ -1,7 +1,6 @@
-import { BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
-import { PlayerInstance } from './player';
+import { BelongsToManyAddAssociationMixin, BelongsToManyAddAssociationsMixin, BelongsToManyGetAssociationsMixin, BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
 import { ItemInstance } from './item';
-import { Database } from '../util/database';
+import { PlayerInstance } from './player';
 
 /**
  * base attribute of the model
@@ -17,9 +16,14 @@ interface InventoryAttributes{
  * this combine the attribute interface with model,
  * so we can use this interface as referencee for the model
  */
-interface InventoryInstance extends Model<InventoryAttributes>, InventoryAttributes {
-    getPlayer(): Promise<PlayerInstance>;
-    getItem(): Promise<ItemInstance>;
+export interface InventoryInstance extends Model<InventoryAttributes>, InventoryAttributes {
+    // getPlayer: BelongsToManyGetAssociationsMixin<PlayerInstance>;
+    // addPlayer: BelongsToManyAddAssociationMixin<PlayerInstance, number>;
+    // addPlayers: BelongsToManyAddAssociationsMixin<PlayerInstance, number>;
+
+    // getItem: BelongsToManyGetAssociationsMixin<ItemInstance>;
+    // addItem: BelongsToManyAddAssociationMixin<ItemInstance, number>;
+    // addItems: BelongsToManyAddAssociationsMixin<ItemInstance, number>;
 }
 
 /**

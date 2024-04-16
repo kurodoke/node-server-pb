@@ -49,12 +49,13 @@ class Server {
                     console.log("[Error] The Connection closed but the instance can't be deleted or not exist (session Id: " + id + ")");
                 }
 
-                connection.account.offline().then((success) => {
-                    console.log("[Info] The Connection sucessfuly closed");
-                }, (err) => {
-                    console.log("[Error] The Connection closed but the Database can't be updated");
-                })
-                
+                if(connection.account){
+                    connection.account.offline().then((success) => {
+                        console.log("[Info] The Connection sucessfuly closed");
+                    }, (err) => {
+                        console.log("[Error] The Connection closed but the Database can't be updated");
+                    })
+                }
             });
         
             socket.on("connectionAttempt", (stream) => {
