@@ -5,7 +5,8 @@ import { PlayerInstance } from './player';
 /**
  * base attribute of the model
  */
-interface InventoryAttributes{
+export interface InventoryAttributes{
+    object: bigint;
     playerId: number;
     itemId: number;
     count: number;
@@ -41,6 +42,12 @@ export type InventoryModelStatic = typeof Model
  */
 export function InventoryModel(sequelize: Sequelize): InventoryModelStatic{
     return <InventoryModelStatic>sequelize.define<InventoryInstance>("inventory", {
+        object: {
+            type: DataTypes.BIGINT,
+            allowNull: false,
+            autoIncrement: true,
+        },
+
         playerId:{
             type:DataTypes.INTEGER,
             allowNull: false,
@@ -68,18 +75,28 @@ export function InventoryModel(sequelize: Sequelize): InventoryModelStatic{
 }
 
 /**
- * this is clan object from each instance of player inventory in database
+ * this is an object from each instance of player inventory in database
  */
 export class Inventory implements InventoryAttributes {
+    declare object: bigint;
     declare playerId: number;
     declare count: number;
     declare equip: number;
     declare itemId: number;
 
-    constructor(inventory: InventoryAttributes) {
-        this.playerId = inventory.playerId;
-        this.count = inventory.count;
-        this.equip = inventory.equip;
-        this.itemId = inventory.itemId;
+    declare slot: number;
+    declare effect: number;
+    declare couponId: number;
+    declare rank: number;
+    declare template: number;
+    declare starter: boolean;
+
+    public full: boolean = false;
+
+    constructor(object: bigint, count: number, equip: number, itemId: number) {
+        this.object = object;
+        this.count = count;
+        this.equip = equip;
+        this.itemId = itemId;
     }
 }

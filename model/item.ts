@@ -64,7 +64,7 @@ export function ItemModel(sequelize: Sequelize): ItemModelStatic{
 }
 
 /**
- * this is clan object from each instance of item in database
+ * this is an object from each instance of item in database
  */
 export class Item implements ItemAttributes {
     declare id: number;

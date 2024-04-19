@@ -81,7 +81,7 @@ export function StoreModel(sequelize: Sequelize): StoreModelStatic {
 }
 
 /**
- * this is clan object from each instance of store in database
+ * this is an object from each instance of store in database
  */
 export class Store implements StoreAttributes {
     declare cash: number;

@@ -1,12 +1,13 @@
-import path from "path";
-import { PbParser } from "../pbParser";
-import { MissionCards } from "../../model/missionCards";
 import { readdir, readdirSync } from "fs";
-import { getPriceForMission } from "../../enum/MissionCardPriceEnum";
+
 import { MissionCard } from "../../model/missionCard";
-import { MissionOfTheCard } from "../../model/missionOfTheCard";
 import { MissionCardAward } from "../../model/missionCardAward";
+import { MissionCards } from "../../model/missionCards";
 import { MissionCardsAward } from "../../model/missionCardsAward";
+import { MissionOfTheCard } from "../../model/missionOfTheCard";
+import { PbParser } from "../pbParser";
+import { getPriceForMission } from "../../enum/MissionCardPriceEnum";
+import path from "path";
 
 type CardsId = number;
 
@@ -19,6 +20,8 @@ export class MissionPb {
         path.resolve() + "/data/file/missions/cardAwards/CardAwards.pb";
 
     public static missionCardsList: Map<CardsId, MissionCards> = new Map();
+
+    public static missionListNumber: number = 0;
 
     static load() {
         MissionPb.loadCard();
@@ -34,7 +37,7 @@ export class MissionPb {
             let filenames = readdirSync(MissionPb._folderCardPath);
 
             for (const _filenames of filenames) {
-                if (_filenames == "Event.pb") continue; //this was prevent to crash for some point
+                if (_filenames == "Event.pb") continue; //this one did prevent some crash for some point
                 try {
                     let parser = new PbParser().loadFile(
                         MissionPb._folderCardPath + _filenames
@@ -53,6 +56,7 @@ export class MissionPb {
                     for (let index = 0; index < sizeCard; index++) {
                         let cardIndex = parser.readD();
 
+                        //every 16 byte, create a new card instance and save it to cards instance
                         if (index % 4 == 0) {
                             cardsInstance.setCard(
                                 cardIndex,
@@ -64,12 +68,14 @@ export class MissionPb {
                         let missionId = parser.readD();
                         let missionType = parser.readD();
 
+                        //after those 3 data read, a new mission instance created, and save those 3 data inside
                         let mission = new MissionOfTheCard(
                             missionType,
                             limit,
                             missionId
                         );
 
+                        //after mission instace created, then the instance is saved under the card instance
                         cardsInstance.getCard(cardIndex).addMission(mission);
                     }
 
@@ -78,6 +84,10 @@ export class MissionPb {
                     console.log(err);
                 }
             }
+            
+            this.missionCardsList.forEach((cards) => {
+                this.missionListNumber += 1 << cards.id;
+            });
         } catch (err) {
             console.log("[Error] On Read folder Cards");
         }

@@ -1,6 +1,6 @@
-import path from "path";
-import { IniParser } from "../data/iniParser";
 import { AuthSettingDatabase } from "./authSettingDatabase";
+import { IniParser } from "../data/iniParser";
+import path from "path";
 
 export class AuthSettingServer{
     
@@ -18,6 +18,8 @@ export class AuthSettingServer{
     public static serverPort: number;
     public static syncPort: number;
     public static launcherKey: number;
+    public static missionActive: boolean;
+
     public static minNickSize: number;
     public static maxNickSize: number;
     public static minUserSize: number;
@@ -46,6 +48,7 @@ export class AuthSettingServer{
             AuthSettingServer.gameLocale = data['GameLocales'].split(',');
             AuthSettingServer.isTestMode = data["isTestMode"];
             AuthSettingServer.launcherKey = data["launcherKey"];
+            AuthSettingServer.missionActive = data["MissionActive"];
     
             AuthSettingServer.maxNickSize = data["maxNickSize"];
             AuthSettingServer.minUserSize = data["maxLoginSize"];

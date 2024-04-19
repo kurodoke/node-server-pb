@@ -100,7 +100,7 @@ export function EquipmentModel(sequelize: Sequelize): EquipmentModelStatic{
 }
 
 /**
- * this is clan object from each instance of (player used)equipment in database
+ * this is an object from each instance of (player used)equipment in database
  */
 export class Equipment implements EquipmentAttributes {
     declare playerId: number;

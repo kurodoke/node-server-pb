@@ -85,7 +85,7 @@ export function AccountModel(sequelize: Sequelize): AccountModelStatic {
 }
 
 /**
- * this is clan object from each instance of account in database
+ * this is an object from each instance of account in database
  */
 export class Account implements AccountAttributes {
     declare id: number;

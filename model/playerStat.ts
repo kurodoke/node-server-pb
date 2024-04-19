@@ -88,7 +88,7 @@ export function PlayerStatModel(sequelize: Sequelize): PlayerStatModelStatic{
 }
 
 /**
- * this is clan object from each instance of player stat in database
+ * this is stat object from each instance of player stat in database
  */
 export class PlayerStat implements PlayerStatAttributes {
     declare playerId: number;

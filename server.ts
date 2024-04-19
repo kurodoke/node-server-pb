@@ -1,13 +1,12 @@
-import net from "net";
-import { decrypt } from "./util/decrypt";
 import { AuthClient } from "./auth/authClient";
-import { Database } from "./util/database";
-import { ClientManager } from "./manager/clientManager";
 import { AuthSettingServer } from "./config/authSettingServer";
+import { ClientManager } from "./manager/clientManager";
+import { Database } from "./util/database";
+import { MapModeIni } from "./data/loader/mapModeIni";
 import { MapsXML } from "./data/loader/mapsXML";
 import { MissionPb } from "./data/loader/missionPb";
-
-
+import { decrypt } from "./util/decrypt";
+import net from "net";
 
 class Server {
     private _PORT: number = 39190;
@@ -83,6 +82,11 @@ class Server {
          * load maps
          */
         MapsXML.load();
+
+        /**
+         * load default maps
+         */
+        MapModeIni.load();
 
         /**
          * load missions

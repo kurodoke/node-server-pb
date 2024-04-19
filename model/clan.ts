@@ -169,7 +169,7 @@ export function ClanModel(sequelize: Sequelize): ClanModelStatic {
 }
 
 /**
- * this is clan object from each instance of clan in database
+ * this is an object from each instance of clan in database
  */
 export class Clan implements ClanAttributes {
     public id: number = 0;

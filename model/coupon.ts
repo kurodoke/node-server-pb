@@ -65,7 +65,7 @@ export function CouponModel(sequelize: Sequelize): CouponModelStatic{
 }
 
 /**
- * this is clan object from each instance of coupon in database
+ * this is an object from each instance of coupon in database
  */
 export class Coupon implements CouponAttributes {
     declare chatColor: number;

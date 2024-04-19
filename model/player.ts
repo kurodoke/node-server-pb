@@ -28,10 +28,10 @@ export interface PlayerAttributes{
     ensign: number;
     medal: number;
     masterMedal: number;
-    mission1: number;
-    mission2: number;
-    mission3: number;
-    mission4: number;
+    cardMissionId1: number;
+    cardMissionId2: number;
+    cardMissionId3: number;
+    cardMissionId4: number;
     tourneyLevel: number;
     clanDate: number;
     accessLevel: number;
@@ -156,22 +156,22 @@ export function PlayerModel(sequelize: Sequelize) : PlayerModelStatic {
             defaultValue: 0,
             allowNull: false,
         },
-        mission1: {
+        cardMissionId1: {
             type: DataTypes.INTEGER,
             defaultValue: 1,
             allowNull: false,
         },
-        mission2: {
+        cardMissionId2: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
             allowNull: false,
         },
-        mission3: {
+        cardMissionId3: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
             allowNull: false,
         },
-        mission4: {
+        cardMissionId4: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
             allowNull: false,
@@ -225,7 +225,7 @@ export function PlayerModel(sequelize: Sequelize) : PlayerModelStatic {
 }
 
 /**
- * this is clan object from each instance of player in database
+ * this is an object from each instance of player in database
  */
 export class Player implements PlayerAttributes {
     declare id: number;
@@ -240,10 +240,10 @@ export class Player implements PlayerAttributes {
     declare ensign: number;
     declare medal: number;
     declare masterMedal: number;
-    declare mission1: number;
-    declare mission2: number;
-    declare mission3: number;
-    declare mission4: number;
+    declare cardMissionId1: number;
+    declare cardMissionId2: number;
+    declare cardMissionId3: number;
+    declare cardMissionId4: number;
     declare tourneyLevel: number;
     declare clanDate: number;
     declare accessLevel: AccessLevelEnum;
@@ -280,10 +280,10 @@ export class Player implements PlayerAttributes {
         this.ensign = player.ensign;
         this.medal = player.medal;
         this.masterMedal = player.masterMedal;
-        this.mission1 = player.mission1;
-        this.mission2 = player.mission2;
-        this.mission3 = player.mission3;
-        this.mission4 = player.mission4;
+        this.cardMissionId1 = player.cardMissionId1;
+        this.cardMissionId2 = player.cardMissionId2;
+        this.cardMissionId3 = player.cardMissionId3;
+        this.cardMissionId4 = player.cardMissionId4;
         this.tourneyLevel = player.tourneyLevel;
         this.clanDate = player.clanDate;
         this.accessLevel = player.accessLevel;
@@ -309,6 +309,10 @@ export class Player implements PlayerAttributes {
 
     unknown(): number{
         return 0;
+    }
+
+    observing(): number{
+        return this.rank == 53 || this.rank == 54 || this.accessLevel > 0 ? 1 : 0;
     }
 }
 
