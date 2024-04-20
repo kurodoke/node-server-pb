@@ -1,16 +1,16 @@
-import { sha256 } from "js-sha256";
-import { Packet } from "../../network/packet";
-import { Database } from "../../util/database";
-import { BASE_LOGIN_PAK } from "../auth-packet-from-server/BASE_LOGIN_PAK";
-import { Convert } from "../../util/convert";
-import { Connection } from "../../network/connection";
-import { BASE_MYCASH_PAK } from "../auth-packet-from-server/BASE_MYCASH_PAK";
-import { Player } from '../../model/player';
 import { Account } from "../../model/account";
-import { PlayerManager } from "../../manager/playerManager";
 import { AccountManager } from "../../manager/accountManager";
+import { BASE_LOGIN_PAK } from "../auth-packet-from-server/BASE_LOGIN_PAK";
+import { BASE_MYCASH_PAK } from "../auth-packet-from-server/BASE_MYCASH_PAK";
+import { Connection } from "../../network/connection";
+import { Convert } from "../../util/convert";
+import { Database } from "../../util/database";
+import { Packet } from "../../network/packet";
+import { Player } from '../../model/player';
+import { PlayerManager } from "../../manager/playerManager";
+import { sha256 } from "js-sha256";
 
-class BASE_LOGIN_REQ_PAK extends Packet{
+export class BASE_LOGIN_REQ_PAK extends Packet{
     private _connection: Connection;
 
     public client_version: string;
@@ -76,5 +76,3 @@ class BASE_LOGIN_REQ_PAK extends Packet{
         return packetArray;
     }
 }
-
-export {BASE_LOGIN_REQ_PAK}

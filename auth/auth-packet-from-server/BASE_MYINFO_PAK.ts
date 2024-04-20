@@ -2,10 +2,16 @@ import { AuthSettingServer } from '../../config/authSettingServer';
 import { Clan } from "../../model/clan";
 import { ClanManager } from "../../manager/clanManager";
 import { Connection } from "../../network/connection";
+import { DateTime } from '../../util/dateTime';
 import { Map } from "../../model/map";
+import { MapModeIni } from '../../data/loader/mapModeIni';
+import { MapsXML } from '../../data/loader/mapsXML';
+import { MissionManager } from '../../manager/missionManager';
+import { MissionPb } from '../../data/loader/missionPb';
 import { Packet } from "../../network/packet";
 import { Player } from "../../model/player";
 import { PlayerManager } from "../../manager/playerManager";
+import { TitleManager } from '../../manager/titleManager';
 
 export class BASE_MYINFO_PAK extends Packet{
     declare player: Player;
@@ -37,7 +43,12 @@ export class BASE_MYINFO_PAK extends Packet{
             this.clan = await ClanManager.getClan(0);
         }
 
-        PlayerManager.setPlayerStat(this.player.id);
+        await PlayerManager.setPlayerStat(this.player.id);
+        await PlayerManager.setPlayerTitle(this.player.id);
+        await PlayerManager.setPlayerMission(this.player.id);
+        await PlayerManager.setPlayerEquipment(this.player.id);
+        await PlayerManager.setPlayerCoupon(this.player.id);
+        TitleManager.setPlayerTitlePos(this.player);
     }
 
     write() {
@@ -104,11 +115,157 @@ export class BASE_MYINFO_PAK extends Packet{
             this.writeD(this.player.medal);
             this.writeD(this.player.masterMedal);
             this.writeC(this.player.playerMission.activeMission);
-            this.writeC(this.player.playerMission.card1);
-            this.writeC(this.player.playerMission.card2);
-            this.writeC(this.player.playerMission.card3);
-            this.writeC(this.player.playerMission.card4);
+            this.writeC(this.player.playerMission.activeCardIndex1);
+            this.writeC(this.player.playerMission.activeCardIndex2);
+            this.writeC(this.player.playerMission.activeCardIndex3);
+            this.writeC(this.player.playerMission.activeCardIndex4);
+            for(let index = 0; index < 10; index++){
+                this.writeH(MissionManager.getCardMissionFlags(this.player.cardMissionId1, index, this.player.playerMission.listMissionFlags1));
+            }
+            for(let index = 0; index < 10; index++){
+                this.writeH(MissionManager.getCardMissionFlags(this.player.cardMissionId2, index, this.player.playerMission.listMissionFlags2));
+            }
+            for(let index = 0; index < 10; index++){
+                this.writeH(MissionManager.getCardMissionFlags(this.player.cardMissionId3, index, this.player.playerMission.listMissionFlags3));
+            }
+            for(let index = 0; index < 10; index++){
+                this.writeH(MissionManager.getCardMissionFlags(this.player.cardMissionId4, index, this.player.playerMission.listMissionFlags4));
+            }
+            this.writeC(this.player.cardMissionId1);
+            this.writeC(this.player.cardMissionId2);
+            this.writeC(this.player.cardMissionId3);
+            this.writeC(this.player.cardMissionId4);
+            this.writeB(this.player.playerMission.listMissionFlags1);
+            this.writeB(this.player.playerMission.listMissionFlags2);
+            this.writeB(this.player.playerMission.listMissionFlags3);
+            this.writeB(this.player.playerMission.listMissionFlags4);
+            this.writeC(this.player.playerTitle.pos1);
+            this.writeC(this.player.playerTitle.pos2);
+            this.writeC(this.player.playerTitle.pos3);
+            this.writeC(this.player.playerTitle.pos4);
+            this.writeC(this.player.playerTitle.pos5);
+            this.writeC(this.player.playerTitle.pos6);
+            this.writeC(this.player.playerTitle.pos7);
+            this.writeC(this.player.playerTitle.pos8);
+            this.writeC(this.player.playerTitle.equipTitle1);
+            this.writeC(this.player.playerTitle.equipTitle2);
+            this.writeC(this.player.playerTitle.equipTitle3);
+            this.writeD(this.player.playerTitle.slot);
+            this.writeD(MapModeIni.Tutorial);
+            this.writeD(MapModeIni.Deathmatch);
+            this.writeD(MapModeIni.Destruction);
+            this.writeD(MapModeIni.Sabotage);
+            this.writeD(MapModeIni.Supression);
+            this.writeD(MapModeIni.Defense);
+            this.writeD(MapModeIni.Challenge);
+            this.writeD(MapModeIni.Dinosaur);
+            this.writeD(MapModeIni.Sniper);
+            this.writeD(MapModeIni.Shotgun);
+            this.writeD(MapModeIni.HeadHunter);
+            this.writeD(MapModeIni.Knuckle);
+            this.writeD(MapModeIni.CrossCounter);
+            this.writeD(MapModeIni.Chaos);
+            this.writeD(MapModeIni.Escort); // only for v41
+
+            // this.writeH(MapsXML.mapArray.length + 1031);
+            this.writeC(MapsXML.mapArray.length);
+            this.writeC(4);
             
+            this.writeH(MapsXML.mapList1);
+            this.writeH(MapsXML.mapList2);
+            this.writeH(MapsXML.mapList3);
+            this.writeH(MapsXML.mapList4);
+            this.writeH(MapsXML.mapList5);
+            this.writeH(MapsXML.mapList6);
+            this.writeH(MapsXML.mapList7);
+            this.writeH(MapsXML.mapList8);
+            this.writeH(MapsXML.mapList9);
+            
+            MapsXML.mapArray.forEach(map => {
+                this.writeH(map.mode);
+            });
+
+            this.writeH(4524);
+            this.writeH(4524);
+            this.writeH(0);
+            this.writeH(0);
+            this.writeH(4136);
+            this.writeH(8);
+            this.writeC(0);
+
+            MapsXML.mapArray.forEach(map => {
+                this.writeC(map.tag);
+            });
+            
+            this.writeC(0);
+            this.writeC(0);
+            this.writeC(1);
+            this.writeC(1);
+            this.writeC(1);
+            this.writeC(1);
+
+            this.writeC(AuthSettingServer.missionActive ? 1 : 0);
+            this.writeD(MissionPb.missionListNumber);
+            
+            this.writeD(50);
+	        this.writeD(75);
+	        this.writeC(1);
+	        this.writeH(20);
+	        this.writeD(764677232);
+	        this.writeD(517802056);
+	        this.writeD(1747888);
+	        this.writeD(4357017);
+	        this.writeD(764677232);
+	        this.writeC(0);
+
+            this.writeC(this.player.observing());
+
+            this.writeC(0);
+            this.writeC(0);
+
+            this.writeC(0); //event
+            this.writeD(0);
+            this.writeC(0);
+            this.writeC(0);
+            this.writeH(0);
+            this.writeD(0);
+            this.writeT("", 60);
+            this.writeC(0);
+            this.writeC(0);
+            this.writeH(0);
+            this.writeD(0);
+            this.writeD(0);
+            this.writeD(0);
+
+            for (let index = 1; index < 9; index++) {
+                if(index == 8){
+                    this.writeC(1);
+                }else{
+                    this.writeD(1);
+                }
+                this.writeD(0);
+                this.writeD(0);
+            }
+
+            this.writeD(new DateTime().getDate());
+
+            this.writeB(Buffer.alloc(12));
+            this.writeB(Buffer.from([0x9B, 0xAF, 0x5D, 0x6B, 0x31, 0x30, 0x2E, 0x31, 0x32, 0x30, 0x2E, 0x31, 0x2E, 0x34, 0x34]));
+            this.writeB(Buffer.alloc(229));
+
+            this.writeH(8085);
+            this.writeH(0);
+            this.writeH(1);
+            this.writeC(0);
+
+            this.writeH(1);
+            this.writeC(1);
+            this.writeC(6);
+            this.writeH(4);
+            this.writeC(1);
+            this.writeC(2);
+            this.writeC(5);
+            this.writeC(3);
         }
     }
 }

@@ -44,7 +44,7 @@ export function TitleModel(sequelize: Sequelize): TitleModelStatic {
         title: {
             type: DataTypes.BLOB,
             allowNull: false,
-            defaultValue: Buffer.alloc(44, 0).writeInt8(1, 0),
+            defaultValue: Buffer.concat([Buffer.from([0x01]), Buffer.alloc(43)]),
         },
         slot: {
             type: DataTypes.INTEGER,

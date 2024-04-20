@@ -1,7 +1,7 @@
 import { Connection } from "../../network/connection";
 import { Packet } from "../../network/packet";
 
-class BASE_SERVER_LIST_PAK extends Packet {
+export class BASE_SERVER_LIST_PAK extends Packet {
     private _connection: Connection;
 
     testServer = [
@@ -83,5 +83,3 @@ class BASE_SERVER_LIST_PAK extends Packet {
         // this.writeC(204)
     }
 }
-
-export {BASE_SERVER_LIST_PAK}

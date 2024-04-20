@@ -126,10 +126,27 @@ class Packet implements IPacket{
      * method to write a string with utf-16le format into buffer
      * @param value string
      */
-    writeS(value: string) {
+    writeS(value: string, length?: number) {
         if (value != null) {
             const buffer = Buffer.from(windows1251.encode(value));
             this.writeB(buffer);
+            if(length){
+                this.writeB(Buffer.alloc(length - buffer.byteLength));
+            }
+        }
+    }
+
+    /**
+     * method to write a string with utf-16le format into buffer
+     * @param value string
+     */
+    writeT(value: string, length?: number) {
+        if (value != null) {
+            const buffer = Buffer.from(windows1252.encode(value));
+            this.writeB(buffer);
+            if(length){
+                this.writeB(Buffer.alloc(length - buffer.byteLength));
+            }
         }
     }
 

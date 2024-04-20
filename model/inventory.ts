@@ -46,6 +46,7 @@ export function InventoryModel(sequelize: Sequelize): InventoryModelStatic{
             type: DataTypes.BIGINT,
             allowNull: false,
             autoIncrement: true,
+            primaryKey: true,
         },
 
         playerId:{

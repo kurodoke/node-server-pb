@@ -1,8 +1,12 @@
+import { Database } from '../util/database';
 import { Player } from '../model/player';
+import { PlayerManager } from './playerManager';
+import { Title } from '../model/title';
 import { titleXML } from '../data/loader/titleXML';
 
 export class TitleManager{
-    public static setPos(p: Player){
+
+    public static setPlayerTitlePos(p: Player){
         for (let index = 1; index <= p.playerTitle.title.length; index++) {
             if(p.playerTitle.title.readInt8(index - 1) == 1){
                 let titleQ = titleXML.titleList.get(index);

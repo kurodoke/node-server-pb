@@ -1,6 +1,6 @@
 import { Packet } from "../../network/packet";
 
-class BASE_XINGCODE extends Packet{
+export class BASE_XINGCODE extends Packet{
     constructor(opcode: number){
         super("write", opcode);
     }
@@ -25,6 +25,3 @@ class BASE_XINGCODE extends Packet{
         this.writeB(bytes);
     }
 }
-
-
-export {BASE_XINGCODE}

@@ -1,10 +1,14 @@
+import { BASE_CONFIG_REQ_PAK } from "../auth-packet-from-client/BASE_CONFIG_REQ_PAK";
+import { BASE_LOGIN_REQ_PAK } from "../auth-packet-from-client/BASE_LOGIN_REQ_PAK";
+import { BASE_MYINFO_REQ_PAK } from "../auth-packet-from-client/BASE_MYINFO_REQ_PAK";
+import { BASE_SERVER_LIST_PAK } from "../auth-packet-from-server/BASE_SERVER_LIST_PAK";
+import { BASE_SERVER_LIST_REQ_PAK } from "../auth-packet-from-client/BASE_SERVER_LIST_REQ_PAK";
+import { BASE_USER_ENTER_REQ_PAK } from "../auth-packet-from-client/BASE_USER_ENTER_REQ_PAK";
+import { BASE_XINGCODE_REQ_PAK } from "../auth-packet-from-client/BASE_XINGCODE_REQ_PAK";
 import { Connection } from "../../network/connection";
 import { Packet } from "../../network/packet";
-import { BASE_SERVER_LIST_PAK } from "../auth-packet-from-server/BASE_SERVER_LIST_PAK";
-import { BASE_LOGIN_REQ_PAK } from "../auth-packet-from-client/BASE_LOGIN_REQ_PAK";
-import { BASE_XINGCODE_REQ_PAK } from "../auth-packet-from-client/BASE_XINGCODE_REQ_PAK";
+import { PacketOpcodeClient } from "../../enum/PacketOpcodeClient";
 import { PacketOpcodeServer } from "../../enum/PacketOpcodeServer";
-import { BASE_MYINFO_REQ_PAK } from "../auth-packet-from-client/BASE_MYINFO_REQ_PAK";
 
 type TypePacketFrom = "client" | "server";
 
@@ -43,7 +47,7 @@ class AuthPacket{
             switch (opcode) {
                 case PacketOpcodeServer.BASE_SERVER_LIST_PAK:
                     packet = new BASE_SERVER_LIST_PAK(opcode, this.connection);
-                    this.setPacket(packet);
+                    this.setPacket(opcode, packet);
                     break;
             
                 default:
@@ -54,35 +58,39 @@ class AuthPacket{
             console.log("packet received opcode: " + opcode);
             
             switch(opcode){
-                case 2561:
+                case PacketOpcodeClient.BASE_LOGIN_REQ_PAK_1:
                     packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
-                    this.setPacket(packet);
+                    this.setPacket(opcode, packet);
                     break;
-                case 2563:
+                case PacketOpcodeClient.BASE_LOGIN_REQ_PAK_2:
                     packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
-                    this.setPacket(packet);
+                    this.setPacket(opcode, packet);
                     break;
-                case 2565: 
+                case PacketOpcodeClient.BASE_MYINFO_REQ_PAK: 
                     packet = new BASE_MYINFO_REQ_PAK(opcode, data, this.connection);
+                    this.setPacket(opcode, packet);
                     break;
                 case 2570: break;
-                case 2575: break;
-                // case 2582:
-                //     packet = new BASE_XINGCODE_REQ_PAK(opcode, data);
-                //     this.setPacket(packet);
-                //     break;
-                // case 2584:
-                //     packet = new BASE_XINGCODE_REQ_PAK(opcode, data);
-                //     this.setPacket(packet);
-                //     break;
-                case 2614: break;
-                case 2672:
-                    packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
-                    this.setPacket(packet);
+                case PacketOpcodeClient.BASE_SERVER_LIST_REQ_PAK: 
+                    packet = new BASE_SERVER_LIST_REQ_PAK(opcode, data, this.connection);
+                    this.setPacket(opcode, packet);
                     break;
-                case 2673:
+                case PacketOpcodeClient.BASE_USER_ENTER_REQ_PAK:
+                    packet = new BASE_USER_ENTER_REQ_PAK(opcode, data);
+                    this.setPacket(opcode, packet);
+                    break;
+                case PacketOpcodeClient.BASE_CONFIG_REQ_PAK: 
+                    packet = new BASE_CONFIG_REQ_PAK(opcode, data, this.connection);
+                    this.setPacket(opcode, packet);
+                    break;
+                case 2614: break;
+                case PacketOpcodeClient.BASE_LOGIN_REQ_PAK_3:
                     packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
-                    this.setPacket(packet);
+                    this.setPacket(opcode, packet);
+                    break;
+                case PacketOpcodeClient.BASE_LOGIN_REQ_PAK_4:
+                    packet = new BASE_LOGIN_REQ_PAK(opcode, data, this.connection);
+                    this.setPacket(opcode, packet);
                     break;
                     
                 default:
@@ -96,8 +104,8 @@ class AuthPacket{
         return packet;
     }
 
-    setPacket(packet: Packet){
-        this.listPacket.set(this._counter + 1, packet);
+    setPacket(opcode, packet: Packet){
+        this.listPacket.set(opcode, packet);
     }
 
 }

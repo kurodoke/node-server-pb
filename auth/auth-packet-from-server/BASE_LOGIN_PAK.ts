@@ -1,7 +1,6 @@
 import { Packet } from "../../network/packet";
 
-
-class BASE_LOGIN_PAK extends Packet{
+export class BASE_LOGIN_PAK extends Packet{
     login: number;
     zero: number; //allow
     user: string;
@@ -23,5 +22,3 @@ class BASE_LOGIN_PAK extends Packet{
     }
 
 }
-
-export {BASE_LOGIN_PAK};

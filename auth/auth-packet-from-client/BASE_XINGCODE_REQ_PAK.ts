@@ -1,7 +1,7 @@
-import { Packet } from "../../network/packet";
 import { BASE_XINGCODE } from "../auth-packet-from-server/BASE_XINGCODE";
+import { Packet } from "../../network/packet";
 
-class BASE_XINGCODE_REQ_PAK extends Packet{
+export class BASE_XINGCODE_REQ_PAK extends Packet{
     bytes: Uint8Array;
     
     constructor(opcode: number, data: Buffer){
@@ -16,5 +16,3 @@ class BASE_XINGCODE_REQ_PAK extends Packet{
         return [new BASE_XINGCODE(2583)];
     }
 }
-
-export {BASE_XINGCODE_REQ_PAK}

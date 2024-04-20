@@ -1,12 +1,12 @@
-import net from 'net';
-import { Convert } from "../util/convert";
-import { Player } from '../model/player';
-import { Connection } from '../network/connection';
-import randomInt from '../util/random';
-import { Packet } from '../network/packet';
-import { AuthPacket } from './auth-protocol/authPacket';
 import { Account } from '../model/account';
+import { AuthPacket } from './auth-protocol/authPacket';
+import { Connection } from '../network/connection';
+import { Convert } from "../util/convert";
+import { Packet } from '../network/packet';
 import { PacketOpcodeServer } from '../enum/PacketOpcodeServer';
+import { Player } from '../model/player';
+import net from 'net';
+import randomInt from '../util/random';
 
 class AuthClient {
     SECURITY_KEY = 29890;
@@ -63,7 +63,7 @@ class AuthClient {
             if (packetToSend.buf.length < 2) return;
     
             const buf_packetSize = Buffer.alloc(2); //allocate 2 byte 00 00
-            buf_packetSize.writeUInt8(packetToSend.buf.length - 2); //fill the byte with size
+            buf_packetSize.writeUint16LE(packetToSend.buf.length - 2); //fill the byte with size
     
             const data = Buffer.concat([buf_packetSize, packetToSend.buf]); //combine the packet before with the payload
             
@@ -83,7 +83,7 @@ class AuthClient {
 
         packetToRespond.map(packet => {
             this.sendPacket(packet);
-            AuthPacket.getInstance("server").setPacket(packet);
+            AuthPacket.getInstance("server").setPacket(packet.opcode, packet);
         })
     }
 }

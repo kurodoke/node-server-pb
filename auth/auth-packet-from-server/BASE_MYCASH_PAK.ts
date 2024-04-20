@@ -1,6 +1,6 @@
 import { Packet } from "../../network/packet";
 
-class BASE_MYCASH_PAK extends Packet{
+export class BASE_MYCASH_PAK extends Packet{
     cash: number;
     point: number;
 
@@ -17,5 +17,3 @@ class BASE_MYCASH_PAK extends Packet{
     }
 
 }
-
-export {BASE_MYCASH_PAK};
