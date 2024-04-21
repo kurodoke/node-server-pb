@@ -71,10 +71,8 @@ class AuthPacket{
                     this.setPacket(opcode, packet);
                     break;
                 case 2570: break;
-                case PacketOpcodeClient.BASE_SERVER_LIST_REQ_PAK: 
-                    packet = new BASE_SERVER_LIST_REQ_PAK(opcode, data, this.connection);
-                    this.setPacket(opcode, packet);
-                    break;
+                case 2571: break;
+                case PacketOpcodeClient.BASE_SERVER_LIST_REQ_PAK: break;
                 case PacketOpcodeClient.BASE_USER_ENTER_REQ_PAK:
                     packet = new BASE_USER_ENTER_REQ_PAK(opcode, data);
                     this.setPacket(opcode, packet);

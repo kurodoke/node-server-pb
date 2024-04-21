@@ -22,10 +22,6 @@ export interface ItemInstance extends Model<ItemAttributes>, ItemAttributes {
     getStore: HasManyGetAssociationsMixin<StoreInstance>;
     addStore: HasManyAddAssociationMixin<StoreInstance, number>;
     addStores: HasManyAddAssociationsMixin<StoreInstance, number>;
-
-    getPlayer: HasManyGetAssociationsMixin<PlayerInstance>;
-    addPlayer: HasManyAddAssociationMixin<PlayerInstance, number>;
-    addPlayers: HasManyAddAssociationsMixin<PlayerInstance, number>;
 }
 
 /**

@@ -42,13 +42,6 @@ export class BASE_MYINFO_PAK extends Packet{
         } else {
             this.clan = await ClanManager.getClan(0);
         }
-
-        await PlayerManager.setPlayerStat(this.player.id);
-        await PlayerManager.setPlayerTitle(this.player.id);
-        await PlayerManager.setPlayerMission(this.player.id);
-        await PlayerManager.setPlayerEquipment(this.player.id);
-        await PlayerManager.setPlayerCoupon(this.player.id);
-        TitleManager.setPlayerTitlePos(this.player);
     }
 
     write() {

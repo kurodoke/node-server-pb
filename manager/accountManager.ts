@@ -6,6 +6,7 @@ import { Convert } from "../util/convert";
 import { Database } from "../util/database";
 import { Model } from "sequelize";
 import { PlayerManager } from "./playerManager";
+import { TitleManager } from "./titleManager";
 import { sha256 } from "js-sha256";
 
 interface LoginProperty {
@@ -60,8 +61,11 @@ export class AccountManager{
             await AccountManager.updateOnlineAccount(model, dataLogin);
         }
 
+        /**
+         * if login success then begin initialization on everything 
+         */
         if(loginStatus = 1){
-            await AccountManager.saveInstance(model, dataLogin, connection);
+            await AccountManager.initialization(model, dataLogin, connection);
         }
 
         return loginStatus;
@@ -71,7 +75,7 @@ export class AccountManager{
      * the next step after login is success
      * get the player model then save it on connection model
      */
-    private static async saveInstance(model: AccountInstance, dataLogin: LoginProperty, connection: Connection) {  
+    private static async initialization(model: AccountInstance, dataLogin: LoginProperty, connection: Connection) {  
         let player = await model.getPlayer();
         /**
          * create the model then save it on connection
@@ -84,6 +88,18 @@ export class AccountManager{
          */
         PlayerManager.addPlayerInstanceToList(connection.player);
         AccountManager.addAccountInstanceToList(connection.account);
+
+        /**
+         * setup for player instance
+         */
+        await PlayerManager.setPlayerStat(connection.player.id);
+        await PlayerManager.setPlayerTitle(connection.player.id);
+        await PlayerManager.setPlayerMission(connection.player.id);
+        await PlayerManager.setPlayerEquipment(connection.player.id);
+        await PlayerManager.setPlayerCoupon(connection.player.id);
+        await PlayerManager.setPlayerMessage(connection.player.id);
+        await PlayerManager.setPlayerConfig(connection.player.id);
+        TitleManager.setPlayerTitlePos(connection.player);
     }
 
     public static addAccountInstanceToList(instance: Account): boolean{

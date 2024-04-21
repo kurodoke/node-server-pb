@@ -1,5 +1,6 @@
-import { BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
+import { BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BuildOptions, DataTypes, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyGetAssociationsMixin, Model, Sequelize } from "sequelize";
 import { Player, PlayerInstance } from "./player";
+import { MessageInstance } from "./message";
 
 /**
  * base attribute of the model
@@ -39,6 +40,10 @@ export interface ClanAttributes {
 export interface ClanInstance extends Model<ClanAttributes>, ClanAttributes {
     getPlayer: BelongsToGetAssociationMixin<PlayerInstance>;
     createPlayer: BelongsToCreateAssociationMixin<PlayerInstance>;
+
+    getMessages: HasManyGetAssociationsMixin<MessageInstance>;
+    addMessages: HasManyAddAssociationsMixin<MessageInstance, number>;
+    addMessage: HasManyAddAssociationMixin<MessageInstance, number>;
 }
 
 /**

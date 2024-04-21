@@ -1,4 +1,4 @@
-import { BelongsToManyAddAssociationMixin, BelongsToManyAddAssociationsMixin, BelongsToManyGetAssociationsMixin, BuildOptions, DataTypes, Model, Sequelize } from 'sequelize';
+import { BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BelongsToManyAddAssociationMixin, BelongsToManyAddAssociationsMixin, BelongsToManyGetAssociationsMixin, BuildOptions, DataTypes, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyGetAssociationsMixin, Model, Sequelize } from 'sequelize';
 import { ItemInstance } from './item';
 import { PlayerInstance } from './player';
 
@@ -18,13 +18,11 @@ export interface InventoryAttributes{
  * so we can use this interface as referencee for the model
  */
 export interface InventoryInstance extends Model<InventoryAttributes>, InventoryAttributes {
-    // getPlayer: BelongsToManyGetAssociationsMixin<PlayerInstance>;
-    // addPlayer: BelongsToManyAddAssociationMixin<PlayerInstance, number>;
-    // addPlayers: BelongsToManyAddAssociationsMixin<PlayerInstance, number>;
+    getPlayer: BelongsToGetAssociationMixin<PlayerInstance>;
+    addPlayer: BelongsToCreateAssociationMixin<PlayerInstance>;
 
-    // getItem: BelongsToManyGetAssociationsMixin<ItemInstance>;
-    // addItem: BelongsToManyAddAssociationMixin<ItemInstance, number>;
-    // addItems: BelongsToManyAddAssociationsMixin<ItemInstance, number>;
+    getItem: BelongsToGetAssociationMixin<ItemInstance>;
+    addItem: BelongsToCreateAssociationMixin<ItemInstance>;
 }
 
 /**
@@ -52,9 +50,6 @@ export function InventoryModel(sequelize: Sequelize): InventoryModelStatic{
         playerId:{
             type:DataTypes.INTEGER,
             allowNull: false,
-            references: {
-                model: 'player',
-            }
         },
         count:{
             type: DataTypes.INTEGER,
@@ -67,10 +62,6 @@ export function InventoryModel(sequelize: Sequelize): InventoryModelStatic{
         itemId:{
             type: DataTypes.INTEGER,
             allowNull: false,
-            references: {
-                model: 'item',
-                key: 'itemId',
-            }
         }
     })
 }

@@ -1,4 +1,4 @@
-import { BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BelongsToManyAddAssociationMixin, BelongsToManyAddAssociationsMixin, BelongsToManyGetAssociationsMixin, BuildOptions, DataTypes, HasOneCreateAssociationMixin, HasOneGetAssociationMixin, Model, Sequelize } from "sequelize";
+import { BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BelongsToManyAddAssociationMixin, BelongsToManyAddAssociationsMixin, BelongsToManyGetAssociationsMixin, BuildOptions, DataTypes, HasMany, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyGetAssociationsMixin, HasOneCreateAssociationMixin, HasOneGetAssociationMixin, Model, Sequelize } from "sequelize";
 import { AccessLevelEnum } from "../enum/AccessLevelEnum";
 import { ClanRoleEnum } from "../enum/ClanRoleEnum";
 import { CountryEnum } from "../enum/CountryEnum";
@@ -6,11 +6,13 @@ import { AccountInstance } from "./account";
 import { ClanInstance } from "./clan";
 import { Coupon, CouponInstance } from "./coupon";
 import { Equipment, EquipmentInstance } from "./equipment";
-import { Inventory } from "./inventory";
+import { Inventory, InventoryInstance } from "./inventory";
 import { ItemInstance } from "./item";
 import { Mission, MissionInstance } from "./mission";
 import { PlayerStat, PlayerStatInstance } from "./playerStat";
 import { Title, TitleInstance } from "./title";
+import { Message, MessageInstance } from "./message";
+import { PlayerConfig } from "./playerConfig";
 
 /**
  * base attribute of the model
@@ -56,30 +58,35 @@ export interface PlayerInstance extends Model<PlayerAttributes>, PlayerAttribute
     getClan: HasOneGetAssociationMixin<ClanInstance>;
     createClan: HasOneCreateAssociationMixin<ClanInstance>;
 
+    //equipment
+    getEquipment: HasOneGetAssociationMixin<EquipmentInstance>;
+    createEquipment: HasOneCreateAssociationMixin<EquipmentInstance>;
+
+    //playerstat
+    getPlayer_stat: HasOneGetAssociationMixin<PlayerStatInstance>;
+    createPlayer_stat: HasOneCreateAssociationMixin<PlayerStatInstance>;
+
+    //mission
+    getMission: HasOneGetAssociationMixin<MissionInstance>;
+    createMission: HasOneCreateAssociationMixin<MissionInstance>;
+
+    //title
+    getTitle: HasOneGetAssociationMixin<TitleInstance>;
+    createTitle: HasOneCreateAssociationMixin<TitleInstance>;
+
+    //inventory
+    getInventories: HasManyGetAssociationsMixin<InventoryInstance>;
+    addInventories: HasManyAddAssociationsMixin<InventoryInstance, number>;
+    addInventory: HasManyAddAssociationMixin<InventoryInstance, number>;
+
     //coupon
     getCoupon: HasOneGetAssociationMixin<CouponInstance>;
     createCoupon: HasOneCreateAssociationMixin<CouponInstance>;
-
-    //equipment
-    getEquipment: BelongsToGetAssociationMixin<EquipmentInstance>;
-    createEquipment: BelongsToCreateAssociationMixin<EquipmentInstance>;
-
-    //item
-    getItem: BelongsToManyGetAssociationsMixin<ItemInstance>;
-    addItem: BelongsToManyAddAssociationMixin<ItemInstance, number>;
-    addItems: BelongsToManyAddAssociationsMixin<ItemInstance, number>;
-
-    //mission
-    getMission: BelongsToGetAssociationMixin<MissionInstance>;
-    createMission: BelongsToCreateAssociationMixin<MissionInstance>;
-
-    //playerstat
-    getPlayer_stat: BelongsToGetAssociationMixin<PlayerStatInstance>;
-    createPlayer_stat: BelongsToCreateAssociationMixin<PlayerStatInstance>;
-
-    //title
-    getTitle: BelongsToGetAssociationMixin<TitleInstance>;
-    createTitle: BelongsToCreateAssociationMixin<TitleInstance>;
+    
+    //message
+    getMessages: HasManyGetAssociationsMixin<MessageInstance>;
+    addMessages: HasManyAddAssociationsMixin<MessageInstance, number>;
+    addMessage: HasManyAddAssociationMixin<MessageInstance, number>;
 }
 
 /**
@@ -262,6 +269,10 @@ export class Player implements PlayerAttributes {
     public playerStat: PlayerStat;
     public playerEquipment: Equipment;
     public playerCoupon: Coupon;
+
+    public playerConfig: PlayerConfig;
+
+    public playerInbox: Array<Message> = new Array();
     
     public playerInventory: Array<Inventory> = new Array();
 

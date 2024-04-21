@@ -1,20 +1,37 @@
+import { AccountModel, AccountModelStatic } from "../model/account";
+import { ClanModel, ClanModelStatic } from "../model/clan";
+import { CouponModel, CouponModelStatic } from "../model/coupon";
+import { EquipmentModel, EquipmentModelStatic } from "../model/equipment";
+import { InventoryModel, InventoryModelStatic } from "../model/inventory";
+import { ItemModel, ItemModelStatic } from "../model/item";
+import { MessageModel, MessageModelStatic } from "../model/message";
+import { MissionModel, MissionModelStatic } from "../model/mission";
+import { PlayerModel, PlayerModelStatic } from "../model/player";
+import { PlayerStatModel, PlayerStatModelStatic } from "../model/playerStat";
 import { QueryTypes, Sequelize } from "sequelize";
+import { StoreModel, StoreModelStatic } from "../model/store";
+import { TitleModel, TitleModelStatic } from "../model/title";
+
+import { AuthSettingDatabase } from "../config/authSettingDatabase";
+import { AuthSettingServer } from "../config/authSettingServer";
+
 /**
  * model Import
  */
-import { AccountModel, AccountModelStatic } from "../model/account";
-import { PlayerModel, PlayerModelStatic } from "../model/player";
-import { ClanModel, ClanModelStatic } from "../model/clan";
-import { EquipmentModel, EquipmentModelStatic } from "../model/equipment";
-import { PlayerStatModel, PlayerStatModelStatic } from "../model/playerStat";
-import { MissionModel, MissionModelStatic } from "../model/mission";
-import { TitleModel, TitleModelStatic } from "../model/title";
-import { InventoryModel, InventoryModelStatic } from "../model/inventory";
-import { ItemModel, ItemModelStatic } from "../model/item";
-import { StoreModel, StoreModelStatic } from "../model/store";
-import { CouponModel, CouponModelStatic } from "../model/coupon";
-import { AuthSettingDatabase } from "../config/authSettingDatabase";
-import { AuthSettingServer } from "../config/authSettingServer";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 interface IModel{
@@ -29,6 +46,7 @@ interface IModel{
     item: ItemModelStatic;
     store: StoreModelStatic;
     coupon: CouponModelStatic;
+    message: MessageModelStatic;
 }
 
 class Database{
@@ -66,6 +84,7 @@ class Database{
             player_inventory: InventoryModel(this._connection),
             store: StoreModel(this._connection),
             coupon: CouponModel(this._connection),
+            message: MessageModel(this._connection),
         }
 
         /**
@@ -89,14 +108,39 @@ class Database{
         this.model.player.hasOne(this.model.player_title, {foreignKey: "playerId"});
         this.model.player_title.belongsTo(this.model.player, {foreignKey: "playerId"});
 
-        this.model.player.belongsToMany(this.model.item, {through: this.model.player_inventory});
-        this.model.item.belongsToMany(this.model.player, {through: this.model.player_inventory});
+        this.model.player.hasMany(this.model.player_inventory, {
+            foreignKey: "playerId",
+        });
+
+        this.model.player_inventory.belongsTo(this.model.player, {foreignKey: "playerId"});
+        this.model.player_inventory.belongsTo(this.model.item, {foreignKey: "itemId"});
+
+        // this.model.item.hasMany(this.model.player_inventory, {
+        //     foreignKey: "itemId",
+        // });
 
         this.model.item.hasMany(this.model.store, {foreignKey: "itemId"});
         this.model.store.belongsTo(this.model.item, {foreignKey: "itemId"});
 
         this.model.player.hasOne(this.model.coupon, {foreignKey: "playerId"});
         this.model.coupon.belongsTo(this.model.player, {foreignKey: "playerId"});
+
+        this.model.player.hasMany(this.model.message, {
+            foreignKey: "senderId",
+        });
+
+        this.model.message.belongsTo(this.model.player, {foreignKey: "senderId", as: "Sender"});
+
+        this.model.player.hasMany(this.model.message, {
+            foreignKey: "playerId",
+        });
+
+        this.model.message.belongsTo(this.model.player, {foreignKey: "playerId", as: "Player"});
+
+        this.model.clan.hasMany(this.model.message, {
+            foreignKey: "clanId",
+        });
+        this.model.message.belongsTo(this.model.clan, {foreignKey: "clanId", as: "Clan"});
 
         /**
          * connection test then sync the database with the model 
