@@ -4,6 +4,7 @@ import { Player, PlayerInstance } from "../model/player";
 import { Connection } from "../network/connection";
 import { Convert } from "../util/convert";
 import { Database } from "../util/database";
+import { Log } from "../util/log";
 import { Model } from "sequelize";
 import { PlayerManager } from "./playerManager";
 import { TitleManager } from "./titleManager";
@@ -168,7 +169,7 @@ export class AccountManager{
 
             transaction.commit();
         } catch(err){
-            console.log("[Error] transaction error : " + err);
+            Log.getLogger("auth").error(err);
             
             transaction.rollback()
         }

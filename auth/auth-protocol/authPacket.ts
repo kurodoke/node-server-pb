@@ -6,6 +6,7 @@ import { BASE_SERVER_LIST_REQ_PAK } from "../auth-packet-from-client/BASE_SERVER
 import { BASE_USER_ENTER_REQ_PAK } from "../auth-packet-from-client/BASE_USER_ENTER_REQ_PAK";
 import { BASE_XINGCODE_REQ_PAK } from "../auth-packet-from-client/BASE_XINGCODE_REQ_PAK";
 import { Connection } from "../../network/connection";
+import { Log } from "../../util/log";
 import { Packet } from "../../network/packet";
 import { PacketOpcodeClient } from "../../enum/PacketOpcodeClient";
 import { PacketOpcodeServer } from "../../enum/PacketOpcodeServer";
@@ -55,7 +56,7 @@ class AuthPacket{
             }
         }
         if (this.packetFrom == "client" && data){
-            console.log("packet received opcode: " + opcode);
+            Log.getLogger("auth").info("Packet received with opcode: " + opcode);
             
             switch(opcode){
                 case PacketOpcodeClient.BASE_LOGIN_REQ_PAK_1:
@@ -93,7 +94,7 @@ class AuthPacket{
                     
                 default:
                     this.connection.socket.end(()=>{
-                        console.log("[Error] Packet not found with opcode:" + opcode);
+                        Log.getLogger("auth").error("Packet not found with opcode: " + opcode);
                     })
                     break;
             }

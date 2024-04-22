@@ -3,6 +3,7 @@ import { Clan, ClanAttributes } from "../model/clan";
 import { AccessLevelEnum } from '../enum/AccessLevelEnum';
 import { ClanLevelEnum } from "../enum/ClanLevelEnum";
 import { Database } from "../util/database";
+import { Log } from "../util/log";
 import { Player } from "../model/player";
 import { PlayerManager } from "./playerManager";
 
@@ -109,7 +110,7 @@ export class ClanManager{
             // if member exist then return player[] if not then return array with nothing inside
             return ClanManager._listClan.get(clanId).member;
         } catch (err) {
-            console.log("[Error] error on getClanPlayer on clanManager, err:" + err);
+            Log.getLogger("auth").error(err);
         }
     }
 

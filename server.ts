@@ -1,131 +1,150 @@
-import { AuthClient } from "./auth/authClient";
 import { AuthSettingServer } from "./config/authSettingServer";
-import { ClientManager } from "./manager/clientManager";
+import { BattleSettingServer } from "./config/battleSettingServer";
 import { Database } from "./util/database";
-import { MapModeIni } from "./data/loader/mapModeIni";
-import { MapsXML } from "./data/loader/mapsXML";
-import { MissionPb } from "./data/loader/missionPb";
-import { decrypt } from "./util/decrypt";
-import net from "net";
+import { GameSettingServer } from "./config/gameSettingServer";
+import { Log } from './util/log';
+import { Worker } from "worker_threads";
+
+type Port = number;
+
+interface SettingServer {
+    serverIp: string;
+    serverPort?: number;
+    udpPort?: number;
+}
 
 class Server {
-    private _PORT: number = 39190;
-    private _server: net.Server;
-    private DB: Database;
+    public workers: Map<Port, Worker> = new Map();
+    private _stop: boolean = false;
 
-    constructor(){ 
-        /**
-         * load everything the server need before to create one
-         */
-        this.load();
-
-        this._server = net.createServer((socket) => {
-            socket.on("data", (data) => {
-                if (data.length < 4 ) return console.log('[Error] Data received was under 4 byte length');
-                let len = data.readUInt16LE();
-                if (len > 8908){
-				    len &= 32767;
-                }
-
-                //decrypt
-                let client = ClientManager.getClient("client_ip", socket.remoteAddress);
-
-                let decryptedData = decrypt(data, client.CRYPT_KEY);
-
-                console.log(decryptedData);
-
-                client.receivePacket(decryptedData);
-            });
-        
-            socket.on("connect", (connect) => {
-                console.log("connect");
-            });
-            socket.on("close", (close) => {
-                const connection = ClientManager.getClient("client_ip", socket.remoteAddress).connection;
-                const id = connection.sessionId;
-
-                if (!ClientManager.deleteClient("client_ip", socket.remoteAddress) || !ClientManager.deleteClient("queue", id)){
-                    console.log("[Error] The Connection closed but the instance can't be deleted or not exist (session Id: " + id + ")");
-                }
-
-                if(connection.account){
-                    connection.account.offline().then((success) => {
-                        console.log("[Info] The Connection sucessfuly closed");
-                    }, (err) => {
-                        console.log("[Error] The Connection closed but the Database can't be updated");
-                    })
-                }
-            });
-        
-            socket.on("connectionAttempt", (stream) => {
-                console.log("trying to connect!");
-            });
-        
-            socket.on("error", (err) => {
-                console.log(err);
-            });
-        });
-
-        this._server.on("connection", (socket) => {
-            this.addSocket(socket);
-        });
-    }
-
-    load(){
-        /**
-         * config the server
-         */
+    public start() {
         AuthSettingServer.load();
+        GameSettingServer.load();
+        BattleSettingServer.load();
 
+        Database.getInstance();
 
-        /**
-         * load maps
-         */
-        MapsXML.load();
-
-        /**
-         * load default maps
-         */
-        MapModeIni.load();
-
-        /**
-         * load missions
-         */
-        MissionPb.load();
-
-        this.DB = Database.getInstance();
+        this.startAuthServer();
+        this.startGameServer();
+        this.startBattleServer();
     }
 
-    addSocket(socket: net.Socket): void{
-        let sessionId = 0;
-        while (true) {
-            if (sessionId >= 100000) {
-                break;
-            }            
-            sessionId = sessionId + 1;
-            if (!ClientManager.getClient("queue", sessionId)) {
-                console.log("[Info] The Connection is succesfully established! (session Id: " + sessionId + ")");
-                let client = new AuthClient(socket, sessionId);
-                if(!ClientManager.setClient("queue", client) || !ClientManager.setClient("client_ip", client)) {
-                    console.log("[Error] Error occurred to set the client on client manager");
-                    socket.end(() => {
-                        console.log("[Warn] Trying to close (session Id: " + sessionId + ")");
-                    })
-                }
-                return;
+    private startAuthServer() {
+        const authServer = new Worker("./dist/authServer.js");
+
+        authServer.on("message", (value) => {
+            if (value.port && AuthSettingServer.serverPort == value.port) {
+                this.workers.set(value.port, authServer);
+            } else {
+                Log.getLogger("auth").error("Cant set worker to the list");
             }
-        }
+        });
+
+        authServer.on("error", (err) => {
+            Log.getLogger("auth").error(`Error Name: ${err.name} | ${err.message}`);
+        })
+
+        authServer.on("exit", (code) => {
+            Log.getLogger("auth").info(
+                `AuthServer Worker Exit succesfully with Code [${code}]`
+            );
+            this.workers.delete(AuthSettingServer.serverPort);
+        });
+
+        this.waitAllServer(GameSettingServer, 5000, 3, "auth");
     }
 
-    start() {
-        try {
-            this._server.listen(this._PORT, "127.0.0.1", 5, () => {
-                console.log(`[Info] Server started on port ${this._PORT}`);
-            });
-        } catch (err) {
-            console.log(err);
+    private startGameServer() {
+        const gameServer = new Worker("./dist/gameServer.js");
+
+        gameServer.on("message", (value) => {
+            if (value.port && GameSettingServer.serverPort == value.port) {
+                this.workers.set(value.port, gameServer);
+            } else {
+                Log.getLogger("game").error("Cant set worker to the list");
+            }
+        });
+
+        gameServer.on("error", (err) => {
+            Log.getLogger("game").error(`Error Name: ${err.name} | ${err.message}`);
+        })
+
+        gameServer.on("exit", (code) => {
+            Log.getLogger("game").info(
+                `GameServer Worker Exit succesfully with Code [${code}]`
+            );
+            this.workers.delete(GameSettingServer.serverPort);
+        });
+
+        this.waitAllServer(BattleSettingServer, 5000, 3, "game");
+    }
+
+    private startBattleServer() {
+        const battleServer = new Worker("./dist/battleServer.js");
+
+        battleServer.on("message", (value) => {
+            if (value.port && BattleSettingServer.udpPort == value.port) {
+                this.workers.set(value.port, battleServer);
+            } else {
+                Log.getLogger("battle").error("Cant set worker to the list");
+            }
+        });
+
+        battleServer.on("error", (err) => {
+            Log.getLogger("battle").error(`Error Name: ${err.name} | ${err.message}`);
+        })
+
+        battleServer.on("exit", (code) => {
+            Log.getLogger("battle").info(
+                `BattleServer Worker Exit succesfully with Code [${code}]`
+            );
+            this.workers.delete(BattleSettingServer.udpPort);
+        });
+
+        this.waitAllServer(
+            AuthSettingServer,
+            5000,
+            3,
+            "battle"
+        );
+    }
+
+    private waitAllServer(
+        setting: SettingServer,
+        delay: number,
+        repetitions: number,
+        type: "auth" | "game" | "battle"
+    ) {
+        let count = 0;
+        for (var i = 1; i <= repetitions; i++) {
+            setTimeout(() => {
+                let b = this.workers.has(
+                    setting.serverPort ? setting.serverPort : setting.udpPort
+                );
+                if (!b) {
+                    if (type == "auth") {
+                        Log.getLogger(type).warn("Waiting GameServer to up");
+                    }
+                    if (type == "battle") {
+                        Log.getLogger(type).warn(
+                            "Waiting AuthServer to up"
+                        );
+                    }
+                    if (type == "game") {
+                        Log.getLogger(type).warn("Waiting BattleServer to up");
+                    }
+                    count ++
+                }
+            if (!this._stop && count >= 3) {
+                Log.getLogger(type).warn(`Trying to stop all Server...`);
+                this.workers.forEach((w) =>{
+                    w.terminate();
+                })
+                this._stop = true;
+            }
+            }, i * delay);
         }
     }
 }
 
-new Server().start(); //start the server
+new Server().start();

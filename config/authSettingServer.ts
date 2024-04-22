@@ -1,5 +1,6 @@
-import { AuthSettingDatabase } from "./authSettingDatabase";
+import { DatabaseSetting } from "./databaseSetting";
 import { IniParser } from "../data/iniParser";
+import { Log } from "../util/log";
 import path from "path";
 
 export class AuthSettingServer{
@@ -38,11 +39,11 @@ export class AuthSettingServer{
             AuthSettingServer.autoAccount = data["autoaccounts"];
             AuthSettingServer.configId = data["configId"];
     
-            AuthSettingDatabase.dbHost = data["dbhost"];
-            AuthSettingDatabase.dbName = data["dbname"];
-            AuthSettingDatabase.dbPass = data["dbpass"];
-            AuthSettingDatabase.dbPort = data["dbport"];
-            AuthSettingDatabase.dbUser = data["dbuser"];
+            DatabaseSetting.dbHost = data["dbhost"];
+            DatabaseSetting.dbName = data["dbname"];
+            DatabaseSetting.dbPass = data["dbpass"];
+            DatabaseSetting.dbPort = data["dbport"];
+            DatabaseSetting.dbUser = data["dbuser"];
     
             AuthSettingServer.debugMode = data["debugMode"];
             AuthSettingServer.gameLocale = data['GameLocales'].split(',');
@@ -58,7 +59,7 @@ export class AuthSettingServer{
             AuthSettingServer.outpost = data["Outpost"];
             AuthSettingServer.syncPort = data["syncPort"];
         } catch (err){
-            console.log("[Error] No auth config file found ~ config/auth.ini")
+            Log.getLogger("auth").error("No auth config file found ~ config/auth.ini")
         }
     }
 }

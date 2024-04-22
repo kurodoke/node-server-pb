@@ -1,5 +1,6 @@
 import { readdir, readdirSync } from "fs";
 
+import { Log } from "../../util/log";
 import { MissionCard } from "../../model/missionCard";
 import { MissionCardAward } from "../../model/missionCardAward";
 import { MissionCards } from "../../model/missionCards";
@@ -81,7 +82,7 @@ export class MissionPb {
 
                     MissionPb.missionCardsList.set(cardsId, cardsInstance);
                 } catch (err) {
-                    console.log(err);
+                    Log.getLogger("auth").error(err);
                 }
             }
             
@@ -89,7 +90,7 @@ export class MissionPb {
                 this.missionListNumber += 1 << cards.id;
             });
         } catch (err) {
-            console.log("[Error] On Read folder Cards");
+            Log.getLogger("auth").error(err);
         }
     }
 
@@ -123,7 +124,7 @@ export class MissionPb {
                 }
             }
         } catch (err) {
-            console.log("[Error] On Read file CardAwards");
+            Log.getLogger("auth").error(err);
         }
     }
 
@@ -163,9 +164,7 @@ export class MissionPb {
                 }
             }
         } catch (err) {
-            console.log(err);
-
-            console.log("[Error] On Read file MissionAwards");
+            Log.getLogger("auth").error(err);
         }
     }
 }

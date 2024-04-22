@@ -1,3 +1,7 @@
+/**
+ * model Import
+ */
+
 import { AccountModel, AccountModelStatic } from "../model/account";
 import { ClanModel, ClanModelStatic } from "../model/clan";
 import { CouponModel, CouponModelStatic } from "../model/coupon";
@@ -12,27 +16,9 @@ import { QueryTypes, Sequelize } from "sequelize";
 import { StoreModel, StoreModelStatic } from "../model/store";
 import { TitleModel, TitleModelStatic } from "../model/title";
 
-import { AuthSettingDatabase } from "../config/authSettingDatabase";
 import { AuthSettingServer } from "../config/authSettingServer";
-
-/**
- * model Import
- */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import { DatabaseSetting } from "../config/databaseSetting";
+import { Log } from "./log";
 
 interface IModel{
     account: AccountModelStatic;
@@ -59,12 +45,12 @@ class Database{
 
         this._connection = new Sequelize({
             dialect: "postgres",
-            host: AuthSettingDatabase.dbHost ? AuthSettingDatabase.dbHost : "localhost",
-            password: AuthSettingDatabase.dbPass ? AuthSettingDatabase.dbPass.toString() : "123456",
-            port: AuthSettingDatabase.dbPort ? AuthSettingDatabase.dbPort : 5432,
-            database: AuthSettingDatabase.dbName ? AuthSettingDatabase.dbName : 'postgres',
-            username: AuthSettingDatabase.dbUser ? AuthSettingDatabase.dbUser : "postgres",
-            logging: AuthSettingServer.debugMode ? console.log : false,
+            host: DatabaseSetting.dbHost ? DatabaseSetting.dbHost : "localhost",
+            password: DatabaseSetting.dbPass ? DatabaseSetting.dbPass.toString() : "123456",
+            port: DatabaseSetting.dbPort ? DatabaseSetting.dbPort : 5432,
+            database: DatabaseSetting.dbName ? DatabaseSetting.dbName : 'postgres',
+            username: DatabaseSetting.dbUser ? DatabaseSetting.dbUser : "postgres",
+            logging: AuthSettingServer.debugMode ? (msg) => Log.getLogger("database").info(msg) : false,
         })
         // this._connection = new Sequelize('postgres://postgres:123456@localhost:5432/nodepb');
         
@@ -160,8 +146,8 @@ class Database{
         try {
             await this._connection.authenticate();
             await this._connection.sync();
-        } catch (error) {
-            console.log('[Error] Unable to connect to the database:', error);
+        } catch (err) {
+            Log.getLogger("database").error(err);
         }
     }
 

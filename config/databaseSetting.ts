@@ -1,4 +1,4 @@
-export class AuthSettingDatabase {
+export class DatabaseSetting {
     public static dbName: string; 
     public static dbHost: string;
     public static dbUser: string;

@@ -4,6 +4,7 @@ import { Coupon } from "../model/coupon";
 import { Database } from "../util/database";
 import { Equipment } from "../model/equipment";
 import { Keyboard } from "../model/keyboard";
+import { Log } from "../util/log";
 import { Message } from "../model/message";
 import { Mission } from "../model/mission";
 import { Mouse } from "../model/mouse";
@@ -63,7 +64,7 @@ export class PlayerManager {
                 PlayerManager._listPlayer.get(playerId).playerStat =
                     new PlayerStat(dataStat);
         } catch (err) {
-            console.log(err);
+            Log.getLogger("auth").error(err);
         }
     }
 
@@ -89,7 +90,7 @@ export class PlayerManager {
                     dataTitle
                 );
         } catch (err) {
-            console.log(err);
+            Log.getLogger("auth").error(err);
         }
     }
 
@@ -114,7 +115,7 @@ export class PlayerManager {
                 PlayerManager._listPlayer.get(playerId).playerMission =
                     new Mission(dataMission);
         } catch (err) {
-            console.log(err);
+            Log.getLogger("auth").error(err);
         }
     }
 
@@ -139,7 +140,7 @@ export class PlayerManager {
                 PlayerManager._listPlayer.get(playerId).playerEquipment =
                     new Equipment(dataEquipment);
         } catch (err) {
-            console.log(err);
+            Log.getLogger("auth").error(err);
         }
     }
 
@@ -164,7 +165,7 @@ export class PlayerManager {
                 PlayerManager._listPlayer.get(playerId).playerCoupon =
                     new Coupon(dataCoupon);
         } catch (err) {
-            console.log(err);
+            Log.getLogger("auth").error(err);
         }
     }
 
@@ -186,7 +187,7 @@ export class PlayerManager {
 
             PlayerManager._listPlayer.get(playerId).playerInbox = messageList;
         } catch (err) {
-            console.log(err);
+            Log.getLogger("auth").error(err);
         }
     }
 
@@ -194,10 +195,10 @@ export class PlayerManager {
         try {
             let k = new Keyboard();
             let m = new Mouse();
-            PlayerManager._listPlayer.get(playerId).playerConfig = new PlayerConfig(k, m);
+            PlayerManager._listPlayer.get(playerId).playerConfig =
+                new PlayerConfig(k, m);
         } catch (err) {
-            console.log(err);
+            Log.getLogger("auth").error(err);
         }
     }
-
 }
