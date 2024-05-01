@@ -27,7 +27,6 @@ class Convert {
             )
             .join("")
             .match(/[a-fA-F0-9]{2}/g)
-            .reverse()
             .join(" ");
     }
 }

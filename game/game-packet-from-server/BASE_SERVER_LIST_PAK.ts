@@ -38,7 +38,7 @@ export class BASE_SERVER_LIST_PAK extends Packet {
         // this.writeH(this._sessionSeed);
 
         for (let index = 0; index < 10; index++) {
-            this.writeC(1);
+            this.writeC(GameServerXML.gameServerList[1].channelList[index].type); 
         }
         this.writeC(1);
         this.writeD(GameServerXML.gameServerList.length); //server count
@@ -62,15 +62,7 @@ export class BASE_SERVER_LIST_PAK extends Packet {
         // this.writeD(150);
 
         // this.writeH(0)
-        // this.writeH(0)
-        // this.writeH(1)
-        // this.writeH(0)
-        // this.writeH(0)
-        // this.writeH(0)
-        // this.writeH(0)
-        // this.writeH(0)
-        // this.writeH(0)
-
+        
         this.writeC(0)
         this.writeC(0)
         this.writeC(1)

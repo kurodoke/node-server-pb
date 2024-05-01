@@ -177,4 +177,11 @@ export class AccountManager{
         return account;
     }
 
+    public static async getAccountbyIp(ip: string){
+        return await Database.getInstance().model.account.findOne({
+            where: {
+                ip: ip,
+            },
+        });
+    }
 }

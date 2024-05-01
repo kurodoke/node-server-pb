@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<list active="true" max_players="200" channel_players="100" type="S_CHANNEL_TYPE_BEGIN" ip="127.0.0.1" port="8052" pass="">
+	<channel id="0" type="CHANNEL_TYPE_BEGIN2" announce="Test Announce 2" max_rooms="50" only_acess="false" bonusExp="15.0" bonusGold="0.1" bonusCash="5.0"/>
+	<channel id="1" type="CHANNEL_TYPE_BEGIN2" announce="Test Announce 2" max_rooms="50" only_acess="false" bonusExp="15.0" bonusGold="0.1" bonusCash="5.0"/>
+	<channel id="2" type="CHANNEL_TYPE_BEGIN2" announce="Test Announce 2" max_rooms="50" only_acess="false" bonusExp="15.0" bonusGold="0.1" bonusCash="5.0"/>
+	<channel id="3" type="CHANNEL_TYPE_BEGIN2" announce="Test Announce 2" max_rooms="50" only_acess="false" bonusExp="15.0" bonusGold="0.1" bonusCash="5.0"/>
+	<channel id="4" type="CHANNEL_TYPE_BEGIN2" announce="Test Announce 2" max_rooms="50" only_acess="false" bonusExp="15.0" bonusGold="0.1" bonusCash="5.0"/>
+	<channel id="5" type="CHANNEL_TYPE_BEGIN2" announce="Test Announce 2" max_rooms="50" only_acess="false" bonusExp="15.0" bonusGold="0.1" bonusCash="5.0"/>
+	<channel id="6" type="CHANNEL_TYPE_BEGIN2" announce="Test Announce 2" max_rooms="50" only_acess="false" bonusExp="15.0" bonusGold="0.1" bonusCash="5.0"/>
+	<channel id="7" type="CHANNEL_TYPE_BEGIN2" announce="Test Announce 2" max_rooms="50" only_acess="false" bonusExp="15.0" bonusGold="0.1" bonusCash="5.0"/>
+	<channel id="8" type="CHANNEL_TYPE_BEGIN2" announce="Test Announce 2" max_rooms="50" only_acess="false" bonusExp="15.0" bonusGold="0.1" bonusCash="5.0"/>
+	<channel id="9" type="CHANNEL_TYPE_BEGIN2" announce="Test Announce 2" max_rooms="50" only_acess="false" bonusExp="15.0" bonusGold="0.1" bonusCash="5.0" max_cf="0"/>
+</list>

@@ -2,36 +2,30 @@ import { AuthClient } from "./auth/authClient";
 import { AuthSettingServer } from "./config/authSettingServer";
 import { ClientManager } from "./manager/clientManager";
 import { Convert } from "./util/convert";
+import { Database } from "./util/database";
+import { DatabaseSetting } from "./config/databaseSetting";
 import { Log } from "./util/log";
 import { MapModeIni } from "./data/loader/mapModeIni";
 import { MapsXML } from "./data/loader/mapsXML";
 import { MissionPb } from "./data/loader/missionPb";
+import { Server } from "./network/server";
 import { decrypt } from "./util/decrypt";
 import net from "net";
-import { parentPort } from "worker_threads";
-import winston from "winston";
 
-class AuthServer {
-    private _port: number;
-    private _ip: string;
-    private _server: net.Server;
-    public logger: winston.Logger;
-
+export class AuthServer extends Server{
     constructor() {
-        /**
-         * load everything the server need before to create one
-         */
+        super("auth");
         this.load();
+        this.port = AuthSettingServer.serverPort;
+        this.ip = AuthSettingServer.serverIp;
+        this.createServer();
+    }
 
-        this._port = AuthSettingServer.serverPort;
-        this._ip = AuthSettingServer.serverIp;
-        this.logger = Log.getLogger("auth");
-
-
-        this._server = net.createServer((socket) => {
+    createServer() {
+        this.server = net.createServer((socket) => {
             socket.on("data", (data) => {
                 if (data.length < 4)
-                    return this.logger.error(
+                    return Log.getLogger(this.type).error(
                         "Data received was under 4 byte length"
                     );
                 let len = data.readUInt16LE();
@@ -47,7 +41,7 @@ class AuthServer {
 
                 let decryptedData = decrypt(data, client.CRYPT_KEY);
 
-                this.logger.debug(
+                Log.getLogger(this.type).info(
                     "Data Decrypted \n" + Convert.bufferToString(decryptedData)
                 );
 
@@ -57,39 +51,39 @@ class AuthServer {
             socket.on("connect", (connect) => {
                 console.log("connect");
             });
-            socket.on("close", (close) => {
-                const connection = ClientManager.getClient(
-                    "client_ip",
-                    socket.remoteAddress
-                ).connection;
-                const id = connection.sessionId;
+            socket.on("close", (hadError) => {
+                // const connection = ClientManager.getClient(
+                //     "client_ip",
+                //     socket.remoteAddress
+                // ).connection;
+                // const id = connection.sessionId;
 
-                if (
-                    !ClientManager.deleteClient(
-                        "client_ip",
-                        socket.remoteAddress
-                    ) ||
-                    !ClientManager.deleteClient("queue", id)
-                ) {
-                    this.logger.error(
-                        `The Connection closed but the instance can't be deleted or not exist (session Id: ${id} ) `
-                    );
-                }
+                // if (
+                //     !ClientManager.deleteClient(
+                //         "client_ip",
+                //         socket.remoteAddress
+                //     ) ||
+                //     !ClientManager.deleteClient("queue", id)
+                // ) {
+                //     Log.getLogger(this.type).error(
+                //         `The Connection closed but the instance can't be deleted or not exist (session Id: ${id} ) `
+                //     );
+                // }
 
-                if (connection.account) {
-                    connection.account.offline().then(
-                        (success) => {
-                            this.logger.info(
-                                "The Connection sucessfuly closed"
-                            );
-                        },
-                        (err) => {
-                            this.logger.error(
-                                "The Connection closed but the Database can't be updated"
-                            );
-                        }
-                    );
-                }
+                // if (connection.account) {
+                //     connection.account.offline().then(
+                //         (success) => {
+                //             Log.getLogger(this.type).info(
+                //                 "The Connection sucessfuly closed"
+                //             );
+                //         },
+                //         (err) => {
+                //             Log.getLogger(this.type).error(
+                //                 "The Connection closed but the Database can't be updated"
+                //             );
+                //         }
+                //     );
+                // }
             });
 
             socket.on("connectionAttempt", (stream) => {
@@ -101,7 +95,7 @@ class AuthServer {
             });
         });
 
-        this._server.on("connection", (socket) => {
+        this.server.on("connection", (socket) => {
             this.addSocket(socket);
         });
     }
@@ -125,9 +119,16 @@ class AuthServer {
          * load missions
          */
         MissionPb.load();
+
+
+        /**
+         * load database setting
+         */
+        DatabaseSetting.load();
+        Database.getInstance();
     }
 
-    addSocket(socket: net.Socket): void {
+    addSocket(socket: net.Socket) {
         let sessionId = 0;
         while (true) {
             if (sessionId >= 100000) {
@@ -135,7 +136,7 @@ class AuthServer {
             }
             sessionId = sessionId + 1;
             if (!ClientManager.getClient("queue", sessionId)) {
-                this.logger.info(
+                Log.getLogger(this.type).info(
                     `The Connection is succesfully established! (session Id: ${sessionId} )`
                 );
                 let client = new AuthClient(socket, sessionId);
@@ -143,11 +144,11 @@ class AuthServer {
                     !ClientManager.setClient("queue", client) ||
                     !ClientManager.setClient("client_ip", client)
                 ) {
-                    this.logger.error(
+                    Log.getLogger(this.type).error(
                         "Error occurred to set the client on client manager"
                     );
                     socket.end(() => {
-                        this.logger.warn(
+                        Log.getLogger(this.type).warn(
                             `Trying to close (session Id: ${sessionId} )`
                         );
                     });
@@ -156,17 +157,4 @@ class AuthServer {
             }
         }
     }
-
-    public start() {
-        try {
-            this._server.listen(this._port, this._ip, 5, () => {
-                this.logger.info(`AuthServer started on port ${this._port}`);
-                parentPort.postMessage({port: this._port});
-            });
-        } catch (err) {
-            this.logger.error(err);
-        }
-    }
 }
-
-new AuthServer().start(); //start the server

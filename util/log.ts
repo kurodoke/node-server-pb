@@ -1,6 +1,6 @@
 import winston, { format, transports } from "winston";
 
-type LabelType = "auth" | "game" | "battle" | "database";
+type LabelType = "auth" | "game" | "battle" | "database" | "main";
 
 winston.addColors({
     info: "green",
@@ -85,14 +85,38 @@ export class Log {
         ],
     });
 
+    private static loggerMain: winston.Logger = winston.createLogger({
+        transports: [
+            new transports.Console({
+                format: format.combine(
+                    format( info => {
+                        info.level = info.level.toUpperCase();
+                        return info;
+                    })(),
+                    format.colorize({ all: true }),
+                    format.label({ label: "Main Server" }),
+                    format.timestamp({ format: "YYYY-MM-DD HH:MM:SS" }),
+                    this._myFormat
+                ),
+            }),
+        ],
+    });
+
     public static getLogger(label: LabelType): winston.Logger {
         if (label == "auth") {
             return this.loggerAuth;
-        } else if (label == "game") {
+        } 
+        if (label == "game") {
             return this.loggerGame;
-        } else if (label == "database"){
+        }
+        if (label == "database"){
             return this.loggerDatabase;
         }
-        return this.loggerBattle;
+        if (label == "main"){
+            return this.loggerMain;
+        }
+        if (label == "battle"){
+            return this.loggerBattle;
+        }
     }
 }

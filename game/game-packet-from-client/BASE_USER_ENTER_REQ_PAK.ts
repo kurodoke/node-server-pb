@@ -1,4 +1,4 @@
-import { BASE_USER_ENTER_PAK } from "../auth-packet-from-server/BASE_USER_ENTER_PAK";
+import { BASE_USER_ENTER_PAK } from "../game-packet-from-server/BASE_USER_ENTER_PAK";
 import { Packet } from "../../network/packet";
 import { PacketOpcodeServer } from "../../enum/PacketOpcodeServer";
 

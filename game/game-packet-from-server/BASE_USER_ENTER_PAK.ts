@@ -6,6 +6,6 @@ export class BASE_USER_ENTER_PAK extends Packet{
     }
 
     write() {
-        this.writeD(0x80000000);
+        this.writeD(0);
     }
 }

@@ -2,3 +2,5 @@ dist
 node_modules
 test.js
 .vscode
+test
+model/wip
