@@ -18,7 +18,7 @@ export class GameServerInfo {
         id: number,
         active: boolean,
         maxPlayers: number,
-        channelPlayers,
+        channelPlayers: number,
         type: string,
         ip: string,
         port: number,

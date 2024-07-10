@@ -264,6 +264,8 @@ export class Player implements PlayerAttributes {
     public IPAddress: string; //inet
     public minutePlayed: Date;
 
+    public changeServer: boolean = false;
+
     public playerTitle: Title;
     public playerMission: Mission;
     public playerStat: PlayerStat;

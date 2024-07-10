@@ -63,16 +63,21 @@ export class GameServer extends Server{
                 ).connection;
                 const id = connection.sessionId;
 
-                if (
-                    !ClientManager.deleteClient(
-                        "client_ip",
-                        socket.remoteAddress
-                    ) ||
-                    !ClientManager.deleteClient("approve", id)
-                ) {
-                    Log.getLogger(this.type).error(
-                        `The Connection closed but the instance can't be deleted or not exist (session Id: ${id} ) `
-                    );
+                //if the player switch the server, then dont delete the socket
+                if(connection.player.changeServer){
+                    connection.player.changeServer = false;
+                } else {
+                    if (
+                        !ClientManager.deleteClient(
+                            "client_ip",
+                            socket.remoteAddress
+                        ) ||
+                        !ClientManager.deleteClient("approve", id)
+                    ) {
+                        Log.getLogger(this.type).error(
+                            `The Connection closed but the instance can't be deleted or not exist (session Id: ${id} ) `
+                        );
+                    }
                 }
 
                 if (connection.account) {
