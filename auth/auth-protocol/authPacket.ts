@@ -52,6 +52,7 @@ export class AuthPacket extends PacketProtocol{
                     break;
                 case 2570: break;
                 case 2571: break;
+                case 2578: break;  
                 case PacketOpcodeClient.BASE_SERVER_LIST_REQ_PAK: break;
                 case PacketOpcodeClient.BASE_CONFIG_REQ_PAK: 
                     packet = new BASE_CONFIG_REQ_PAK(opcode, data, this.connection);

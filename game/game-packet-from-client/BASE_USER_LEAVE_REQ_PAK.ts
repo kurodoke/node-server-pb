@@ -13,6 +13,7 @@ export class BASE_USER_LEAVE_REQ_PAK extends Packet{
 
     async proc(){
         this.connection.player.changeServer = true;
+        this.connection.player.serverId = null;
         return [new BASE_USER_LEAVE_PAK(PacketOpcodeServer.BASE_USER_LEAVE_PAK)];
     }
 }

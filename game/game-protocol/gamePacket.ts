@@ -1,3 +1,4 @@
+import { BASE_CHANNEL_ENTER_REQ_PAK } from "../game-packet-from-client/BASE_CHANNEL_ENTER_REQ_PAK";
 import { BASE_CHANNEL_LIST_REQ_PAK } from "../game-packet-from-client/BASE_CHANNEL_LIST_REQ_PAK";
 import { BASE_CONFIG_REQ_PAK } from "../game-packet-from-client/BASE_CONFIG_REQ_PAK";
 import { BASE_MYINFO_REQ_PAK } from "../game-packet-from-client/BASE_MYINFO_REQ_PAK";
@@ -5,6 +6,7 @@ import { BASE_SERVER_LIST_PAK } from "../game-packet-from-server/BASE_SERVER_LIS
 import { BASE_USER_ENTER_REQ_PAK } from "../game-packet-from-client/BASE_USER_ENTER_REQ_PAK";
 import { BASE_USER_LEAVE_REQ_PAK } from '../game-packet-from-client/BASE_USER_LEAVE_REQ_PAK';
 import { Connection } from "../../network/connection";
+import { LOBBY_ENTER_REQ_PAK } from "../game-packet-from-client/LOBBY_ENTER_REQ_PAK";
 import { Log } from "../../util/log";
 import { Packet } from "../../network/packet";
 import { PacketOpcodeClient } from "../../enum/PacketOpcodeClient";
@@ -38,8 +40,9 @@ export class GamePacket extends PacketProtocol{
                 case 2575: break; 
                 case 2570: break;
                 case 2614: break;
+                case 2578: break;   
                 case PacketOpcodeClient.BASE_USER_ENTER_REQ_PAK:
-                    packet = new BASE_USER_ENTER_REQ_PAK(opcode, data);
+                    packet = new BASE_USER_ENTER_REQ_PAK(opcode, data, this.connection);
                     this.setPacket(opcode, packet);
                     break;
                 case PacketOpcodeClient.BASE_CHANNEL_LIST_REQ_PAK:
@@ -56,6 +59,14 @@ export class GamePacket extends PacketProtocol{
                     break;
                 case PacketOpcodeClient.BASE_CONFIG_REQ_PAK:
                     packet = new BASE_CONFIG_REQ_PAK(opcode, data, this.connection);
+                    this.setPacket(opcode, packet);
+                    break;
+                case PacketOpcodeClient.BASE_CHANNEL_ENTER_REQ_PAK:
+                    packet = new BASE_CHANNEL_ENTER_REQ_PAK(opcode, data, this.connection);
+                    this.setPacket(opcode, packet);
+                    break;
+                case PacketOpcodeClient.LOBBY_ENTER_REQ_PAK:
+                    packet = new LOBBY_ENTER_REQ_PAK(opcode, data, this.connection);
                     this.setPacket(opcode, packet);
                     break;
                 default:

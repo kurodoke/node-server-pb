@@ -280,6 +280,12 @@ export class Player implements PlayerAttributes {
 
     public client_version: number = 38;
 
+    public serverId: number;
+
+    public channelId: number;
+
+    public roomId: number;
+
     constructor(player: PlayerAttributes) {
         this.id = player.id;
         this.name = player.name;

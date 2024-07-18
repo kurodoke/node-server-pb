@@ -21,10 +21,16 @@ export class GameServerXML{
                 if(data["channel"]){
                     data["channel"].map((_channel) => {
                         _channel = _channel["@_"];
-                        gs.channelList.push(new Channel(gs.id, _channel["@_type"], _channel["@_id"], _channel["@_announce"], _channel["@_max_rooms"] , _channel["@_only_access"] , _channel["@_bonusExp"] , _channel["@_bonusGold"], _channel["@_bonusCash"]));
+                        gs.channelList.push(new Channel(gs.id, _channel["@_type"], _channel["@_id"], _channel["@_announce"], _channel["@_max_rooms"] , (_channel["@_only_access"] == "true" ? true : false) , _channel["@_bonusExp"] , _channel["@_bonusGold"], _channel["@_bonusCash"]));
                     });
                 }
             }
         }
+    }
+
+    static getServer(id: number): GameServerInfo {
+        return this.gameServerList.filter((_server) => {
+            return _server.id == id;
+        })[0]
     }
 }

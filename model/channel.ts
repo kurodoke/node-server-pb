@@ -1,4 +1,6 @@
 import { ChannelServerEnum } from "../enum/ChannelServerEnum";
+import { Player } from "./player";
+import { Room } from "./room";
 
 export class Channel {
     serverId: number;
@@ -10,6 +12,8 @@ export class Channel {
     bonusExp: number;
     bonusPoint: number;
     bonusCash: number;
+    listRoom: Map<number, Room> = new Map();
+    listPlayer: Array<Player> = new Array();
 
     constructor(
         serverId: number,

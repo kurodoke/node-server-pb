@@ -82,6 +82,9 @@ export class AccountManager{
          * create the model then save it on connection
          */
         connection.account = new Account(model.dataValues);
+        if (player.dataValues == null){
+            await setTimeout(()=>{}, 2000);
+        }
         connection.player = new Player(player.dataValues);
 
         /**
